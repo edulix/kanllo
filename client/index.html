@@ -29,7 +29,9 @@
 
 <template name="content">
     {{#if currentUser}}
-        Signed in!!
+        {{#if equal currentView "board_list"}}
+            {{> board_list}}
+        {{/if}}
     {{else}}
         {{> home_anonymous}}
     {{/if}}
@@ -65,6 +67,44 @@
             </p>
         </div>
     </section>
+
+    {{> footer}}
+</template>
+
+<template name="board_list">
+    <div class="container">
+        <div class="row">
+            <div class="span9">
+                <section id="content">
+                    <div class="board-title">
+                        <h3>My Boards</h3>
+                        <a href="#" data-toggle="modal" data-target="#new-board">New board...</a>
+                    </div>
+
+                    <ul id="board-list" class="unstyled bold-list">
+                    {{#each my_boards}}
+                        <li>
+                            <a href="/board/{{uri}}">{{name}}</a>
+                            <a class="close" href="#">×</a>
+                        </li>
+                    {{else}}
+                        List of boards empty - you might want to <a href="#" data-toggle="modal" data-target="#new-board">create a new one</a>
+                    {{/each}}
+                    </ul>
+                </section>
+            </div>
+            <div class="span3">
+                <div class="well sidebar-nav">
+                    <div id="gravatar"><img src="{{my_gravatar_url 170}}" /></div>
+                    <ul class="nav nav-list">
+                        <li class="nav-header">@{{my_username}}</li>
+                        <li ><a href="/auth/profile/">Profile</a></li>
+                        <li class="active"><a href="/board/">Boards</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{> footer}}
 </template>

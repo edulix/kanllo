@@ -5,12 +5,16 @@
  * {
  *     name: String,
  *     description: String,
- *     owner_id: String,
- *     admins_id: [String, ...],
- *     members_id: [String, ...],
  *     lists_id: [String, ...],
+ *
+ *     owner: String,
+ *     admins: [String, ...],
+ *     members: [String, ...],
+ *     invited: [String, ...],
+ *
  *     created_at: Number,
- *     creator_id: String,
+ *     creator: String,
+ *
  *     is_public: Boolean,
  *     labels: [String, ...],
  *     uri: String,
@@ -25,9 +29,9 @@ Boards = new Meteor.Collection("boards");
  * Format:
  * {
  *     name: String,
- *     cards_id: [String, ...],
+ *     cards: [String, ...],
  *     created_at: Number,
- *     creator_id: String,
+ *     creator: String,
  * }
  */
 Lists = new Meteor.Collection("lists");
@@ -39,11 +43,34 @@ Lists = new Meteor.Collection("lists");
  * {
  *     title: String,
  *     description: String,
- *     members_id: [String, ...],
+ *     members: [String, ...],
  *     subscribed_ids: [String, ..],
  *     created_at: Number,
- *     creator_id: String,
+ *     creator: String,
  *     uri: String,
  * }
  */
 Cards = new Meteor.Collection("cards");
+
+
+
+
+
+
+
+
+
+/// User email
+var userEmail = function (user)
+{
+    if (user.emails && user.emails.length)
+        return user.emails[0].address;
+
+    if (user.services && user.services.facebook && user.services.facebook.email)
+        return user.services.facebook.email;
+
+    if (user.services && user.services.google && user.services.google.email)
+        return user.services.google.email;
+
+    return null;
+};

@@ -16,8 +16,8 @@ footer {
 }
 
 /* nav bar sign in button */
-.nav.pull-right #login-sign-in-link {
-    text-decoration: none;
+.nav.pull-right .login-link-text {
+    text-decoration: none !important;
 }
 
 .nav.pull-right #login-buttons {
