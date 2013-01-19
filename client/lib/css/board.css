@@ -1,0 +1,179 @@
+.short-padding {
+    padding-left: 10px;
+    padding-right: 0;
+}
+
+.right-menu {
+    padding-right: 10px;
+}
+
+.right-menu > div.activity {
+    overflow-y: auto;
+}
+
+.right-menu > footer {
+    width: 100%;
+    margin: 0;
+}
+
+.bold-list li {
+    border-bottom:1px solid #dcdcdc;
+    position:relative;
+    zoom: 1;
+    padding: 3px 15px;
+}
+
+.bold-list li:hover, .bold-list li:hover a {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.2);
+    background-color: rgb(0, 136, 204);
+}
+
+.bold-list li a {
+    display: block;
+}
+
+.bold-list li a.close {
+    position: absolute;
+    right: 5px;
+    top: 2px;
+}
+
+.board-header {
+    margin-top: -20px;
+}
+
+.board-title h3 {
+    display: inline-block;
+}
+
+.board-title a {
+    color: #aaa;
+    padding-left: 10px;
+}
+
+.board-buttons button {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.board {
+    width: 100%;
+    background-color: #393939;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.list {
+    background-color: #E3E3E3;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 4px;
+
+    margin-bottom: 10px;
+
+    border-bottom: 1px solid #404040;
+    border-top: 1px solid #FFFFFF;
+
+    margin-right: 5px;
+}
+
+.list .header {
+    font-weight: bold;
+    padding: 5px;
+}
+
+@media (min-width: 480px) {
+    .list {
+        float: left;
+        width: 210px;
+    }
+}
+
+@media (max-width: 480px) {
+    .board {
+        height: auto !important;
+    }
+}
+
+.newcard {
+    padding: 5px;
+    margin: -4px;
+    margin-top: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.newcard:hover {
+    color: #393939;
+    cursor: pointer;
+    text-decoration: underline;
+    background-color: #eee;
+}
+
+.description textarea {
+    width: 100%;
+    padding: 0px;
+}
+
+.newcardform {
+    padding: 4px 3px 1px;
+}
+
+.task {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #FFFFFF;
+    border-color: #B9B9B9 #B9B9B9 #939393;
+    border-image: none;
+    border-radius: 3px 3px 3px 3px;
+    border-style: solid;
+    border-width: 1px;
+    cursor: pointer;
+    margin-bottom: 4px;
+    min-height: 18px;
+    padding: 6px 8px 1px;
+    position: relative;
+    transition-duration: 0.2s, 0.1s, 0.2s;
+    transition-property: background, margin-bottom, opacity;
+    transition-timing-function: ease-out;
+    z-index: 0;
+    padding: 4px 3px 1px;
+}
+
+.task:hover {
+    border-color: #393939;
+    box-shadow: 0 0 4px #393939;
+    background-color: #eee;
+}
+
+.memberimg {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.admin, .members {
+    display: inline;
+}
+
+.member-lists {
+    margin-bottom: 5px;
+}
+
+.cardoverflow {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.board {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+

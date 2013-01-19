@@ -1,0 +1,70 @@
+<head>
+  <title>Kanllo</title>
+</head>
+
+<body>
+    {{> navbar}}
+    {{> content}}
+</body>
+
+
+<template name="navbar">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="/">Kanllo</a>
+            <ul class="nav">
+                {{#if currentUser}}
+                <li><a href="/boards">Boards</a></li>
+                {{else}}
+                <li class="active"><a href="/">Home</a></li>
+                {{/if}}
+            </ul>
+            <ul class="nav pull-right">
+                <li>{{loginButtons align="right"}}</li>
+            </ul>
+        </div>
+    </div>
+</template>
+
+
+<template name="content">
+    {{#if currentUser}}
+        Signed in!!
+    {{else}}
+        {{> home_anonymous}}
+    {{/if}}
+</template>
+
+<template name="footer">
+    <footer id="footer">
+        <div class="row-fluid">
+            <div class="span12">
+                <p class="muted">
+                    Powered by <a href="https://meteor.com">Meteor</a>,
+                    <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a>,
+                    <a href="http://wadobo.com">Wadobo Labs</a>
+                    <br>Licenced under AGPLv3, get the <a href="https://github.com/wadobo/kanllo">code</a>
+                </p>
+                <a href="http://wadobo.com">
+                    <img id="wadobo-labs" alt="powered by wadobolabs" src="/wadobolabs.png">
+                </a>
+            </div>
+        </div>
+    </footer>
+</template>
+
+<template name="home_anonymous">
+    <section id="content">
+        <div class="hero-unit landing">
+            <h1>Kanllo</h1>
+            <p>A complete project, in a kanllo board</p>
+            <p>
+                <a class="btn btn-primary btn-large" href="#sign-in">
+                Sign in
+                </a>
+            </p>
+        </div>
+    </section>
+
+    {{> footer}}
+</template>
