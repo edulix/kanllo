@@ -5,4 +5,6 @@ bootstrap
 email
 accounts-facebook
 accounts-twitter
-
+backbone
+spiderable
+preserve-inputs

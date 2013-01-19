@@ -86,9 +86,7 @@ Template.new_board.events({
                 name: name,
             }, function (error, board) {
                 if (! error) {
-                    // TODO: Use backbone router
-                    // Session.set('current_view', 'board_view');
-                    // Session.set('current_view_options', {board_uri: board.uri});
+                    Router.showBoard(board.uri);
                 } else {
                     alert("error creating the board, sorry");
                 }
@@ -115,3 +113,37 @@ Template.remove_board.events({
         Boards.remove({_id: board_id});
     }
 })
+
+var AppRouter = Backbone.Router.extend({
+    routes: {
+        "": "board_list",
+        "boards": "board_list",
+        "board/:board_uri": "board",
+    },
+
+    board_list: function() {
+        console.log("board_list: function () {");
+        Session.set("current_view", "board_list");
+        Session.set("current_view_options", {});
+    },
+
+    board: function (board_uri) {
+        console.log("board: function (board_uri) {");
+        Session.set("current_view", "board_view");
+        Session.set("current_view_options", {board_uri: board_uri});
+    },
+
+    showBoardList: function() {
+        this.navigate("", true);
+    },
+
+    showBoard: function(board_uri) {
+        this.navigate("board/" + board_uri, true);
+    }
+});
+
+Router = new AppRouter;
+
+Meteor.startup(function () {
+  Backbone.history.start({pushState: true});
+});

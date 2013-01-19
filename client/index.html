@@ -45,6 +45,9 @@
         {{#if equal currentView "board_list"}}
             {{> board_list}}
         {{/if}}
+        {{#if equal currentView "board_view"}}
+            {{> board_view}}
+        {{/if}}
     {{else}}
         {{> home_anonymous}}
     {{/if}}
@@ -118,7 +121,7 @@
                     <ul class="nav nav-list">
                         <li class="nav-header">@{{my_username}}</li>
                         <li ><a href="/auth/profile/">Profile</a></li>
-                        <li class="active"><a href="/board/">Boards</a></li>
+                        <li class="active"><a href="/boards">Boards</a></li>
                     </ul>
                 </div>
             </div>
@@ -172,4 +175,10 @@
         </div>
         {{/isolate}}
     </div>
+</template>
+
+
+<template name="board_view">
+    Showing a board
+    {{> footer}}
 </template>
