@@ -1,3 +1,18 @@
+// Utils
+
+function randomId()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for(var i = 0; i < 15; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+
+    return text;
+}
+
+
 /**
  * Boards
  *
@@ -22,6 +37,62 @@
  */
 Boards = new Meteor.Collection("boards"); 
 
+
+Boards.allow({
+  insert: function (userId, party) {
+    return false; // no cowboy inserts -- use createBoard method
+  },
+  update: function (userId, boards, fields, modifier) {
+//     return _.all(boards, function (board) {
+//       if (userId !== board.owner && board.admins.indexOf(userId) == -1) {
+//         return false; // not the owner
+//       }
+// 
+//       var allowed = ["name", "description", "lists_id", ];
+//       if (_.difference(fields, allowed).length)
+//         return false; // tried to write to forbidden field
+// 
+//       // A good improvement would be to validate the type of the new
+//       // value of the field (and if a string, the length.) In the
+//       // future Meteor will have a schema system to makes that easier.
+      return true;
+//     });
+  },
+  remove: function (userId, boards) {
+    return ! _.any(boards, function (board) {
+      // deny if not the owner
+      return board.owner !== userId;
+    });
+  }
+});
+
+
+Meteor.methods({
+    createBoard: function (options)
+    {
+        options = options || {};
+        if (!typeof options.name === "string" && options.name.length > 3 &&
+            options.name.length < 140)
+        {
+            throw new Meteor.Error(400, "Invalid name");
+        }
+
+        return Boards.insert({
+            name: options.name,
+            description: "",
+            lists_ids: [],
+            owner: this.userId,
+            admins: [this.userId],
+            members: [this.userId],
+            invited: [],
+            created_at: new Date().getTime(),
+            creator: this.userId,
+            is_public: false,
+            labels: [],
+            uri: randomId()
+        });
+    }
+});
 
 /**
  * Lists

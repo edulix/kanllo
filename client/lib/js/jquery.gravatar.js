@@ -1,8 +1,10 @@
 /*
- * jQuery.gravatar 1.0.1 (2009-01-08)
+ * jQuery.gravatar, 2009,2013
  *
  * Written by Zach Leatherman
  * http://zachleat.com
+ * Modified by Eduardo Robles Elvira
+ * http://www.wadobo.com
  *
  * Licensed under the WTFPL (http://sam.zoy.org/wtfpl/)
  *
