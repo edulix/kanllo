@@ -53,7 +53,6 @@ Handlebars.registerHelper('modal_form_errors', function() {
 //### content view
 
 Template.content.currentView = function() {
-    console.log("current_view = " + Session.get('current_view'));
     return Session.get('current_view');
 }
 

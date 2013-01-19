@@ -77,20 +77,44 @@ Meteor.methods({
             throw new Meteor.Error(400, "Invalid name");
         }
 
-        return Boards.insert({
+        var created_at = new Date().getTime();
+
+        var todoList = Lists.insert({
+            name: "Todo",
+            cards: [],
+            created_at: created_at,
+            creator: this.userId
+        });
+
+        var doingList = Lists.insert({
+            name: "Doing",
+            cards: [],
+            created_at: created_at,
+            creator: this.userId
+        });
+
+        var doneList = Lists.insert({
+            name: "Done",
+            cards: [],
+            created_at: created_at,
+            creator: this.userId
+        });
+
+        var board = Boards.insert({
             name: options.name,
             description: "",
-            lists_ids: [],
+            lists_ids: [todoList._id, doingList._id, doneList._id],
             owner: this.userId,
             admins: [this.userId],
             members: [this.userId],
             invited: [],
-            created_at: new Date().getTime(),
+            created_at: created_at,
             creator: this.userId,
             is_public: false,
             labels: [],
             uri: randomId()
         });
+        return board;
     }
 });
 
