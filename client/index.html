@@ -105,8 +105,8 @@
                     {{#each my_boards}}
                         <li>
                             <a href="/board/{{uri}}">{{name}}</a>
-                            {{#if can_remove_board _id}}
-                                <a class="close remove_board" data-toggle="modal" data-target="#remove-board" board-id="{{_id}}" board-name="{{name}}" href="#">×</a>
+                            {{#if can_remove_board uri}}
+                                <a class="close remove_board" data-toggle="modal" data-target="#remove-board" board-uri="{{uri}}" board-name="{{name}}" href="#">×</a>
                             {{/if}}
                         </li>
                     {{else}}
@@ -179,6 +179,103 @@
 
 
 <template name="board_view">
-    Showing a board
-    {{> footer}}
+    <div class="container-fluid short-padding">
+        <header id="header"> </header>
+        <section id="content">
+            <div class="row-fluid">
+                <div class="span12 board-header">
+                    <h4>
+                        {{#isolate}}
+                        <span class="boardname">{{boardname}}</span>
+                        {{/isolate}}
+                        <a href="#" data-target="#edit-board-modal" data-toggle="modal">
+                            <i class="icon-pencil"></i>
+                        </a>
+                    </h4>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span10 board-parent">
+                    <div class="board" style="height: 1715px;">
+                        <div id="list-list" style="width: 669px;">
+                            {{#isolate}}
+                            {{#each board_lists}}
+                            <div id="board_list_{{_id}}" class="list ui-draggable ui-droppable">
+                                <div class="header ui-droppable">
+                                    <span class="name">{{name}}</span>
+                                    <a class="close" href="#">×</a>
+                                </div>
+                                <div class="cardoverflow" style="height: auto;">
+                                    <div class="cards">
+                                        <div id="board_card_id" class="task ui-draggable ui-droppable">
+                                            <span class="description">Pass pylint and jslint</span>
+                                            <ul class="pull-right inline onetaskmembers"></ul>
+                                            <div class="clear"></div>
+                                        </div>
+                                    </div>
+                                    <div class="newcardform"></div>
+                                </div>
+                                <div class="newcard muted">Add a card...</div>
+                            </div>
+                            {{/each}}
+                            {{/isolate}}
+                        </div>
+                    </div>
+                </div>
+                <div class="span2 right-menu" style="height: 1715px;">
+                    <div class="top-menu">
+                        <h4>Members</h4>
+                        <div class="member-lists">
+                            <ul class="inline admin">
+                                <span>
+                                    <li class="btn-group memberimg">
+                                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                                            <img title="danigm" alt="danigm" src="http://www.gravatar.com/avatar/8da96af78e0089d6d970bf3760b0e724.jpg?s=30&"/>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <img src="http://www.gravatar.com/avatar/8da96af78e0089d6d970bf3760b0e724.jpg?s=30&"/>danigm
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </span>
+                            </ul>
+                            <ul class="inline members"></ul>
+                        </div>
+
+                        <div class="board-buttons">
+                            <button class="btn" data-target="#member-modal" data-toggle="modal">
+                                <i class="icon-user"></i>
+                                Add Members
+                            </button>
+                        </div>
+
+                        <h4>Board</h4>
+
+                        <div class="board-buttons">
+                            <button class="btn" data-target="#modal" data-toggle="modal">
+                                <i class="icon-list"></i>
+                                Add List
+                            </button>
+                            <button class="btn">
+                                <i class="icon-wrench"></i>
+                                Options
+                            </button>
+                        </div>
+
+                        <h4>Activity</h4>
+                    </div>
+
+                    <div class="activity" style="height: 1412px;"> </div>
+                        <footer>
+                            <a href="http://wadobo.com">
+                                <img id="wadobolabsimg" src="/wadobolabs.png" alt="powered by wadobolabs">
+                            </a>
+                            <a href="https://github.com/wadobo/kanllo">code</a>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </template>

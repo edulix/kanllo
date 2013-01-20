@@ -12,12 +12,21 @@ Meteor.publish('boards', function () {
         ]});
 });
 
-Meteor.publish('lists', function () {
-    return Lists.find();
+Meteor.publish('lists', function (board_uri) {
+    var board = Boards.findOne({uri: board_uri});
+    console.log("lists publish: board = ");
+    console.log(board.lists);
+
+    return Lists.find({_id: {$in: board.lists}});
 });
 
-Meteor.publish('cards', function () {
-    return Cards.find();
+Meteor.publish('cards', function (board_uri) {
+    var board = Boards.findOne({uri: board_uri});
+    var card_ids = [];
+    var lists = Lists.find({_id: {$in: board.lists}}).forEach(function (l) {
+        card_ids.concat(l.cards);
+    });
+    return Cards.find({_id: {$in: card_ids}});
 });
 
 // Accounts configuration

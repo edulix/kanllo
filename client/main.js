@@ -11,16 +11,29 @@ Session.set('current_view_options', {});
 
 Session.set('modal_form_errors', '');
 
-// Always be subscribed to the todos for the selected list.
+// Always be subscribed to the todos for the selected list
 Meteor.autosubscribe(function () {
     if (Meteor.userId()) {
         Meteor.subscribe("boards");
     }
 });
 
+// Suscribe to cards and list if we have a board
+Meteor.autosubscribe(function () {
+    if (Meteor.userId() && Session.get('current_view') == "board_view") {
+
+        var board_uri = Session.get('current_view_options').board_uri;
+        var board = Boards.findOne({uri: board_uri});
+        if (board) {
+            console.log("subscribing to lists and cards");
+            Meteor.subscribe("lists", board_uri);
+            Meteor.subscribe("cards", board_uri);
+        }
+    }
+});
+
 
 ///### Helpers
-
 
 // Generic helpers
 Handlebars.registerHelper('equal', function(a, b) {
@@ -58,15 +71,14 @@ Template.content.currentView = function() {
 
 //### board_list view
 
-Template.board_list.can_remove_board = function(_id) {
-    return Boards.findOne({_id: _id}).owner == Meteor.userId();
+Template.board_list.can_remove_board = function(uri) {
+    return Boards.findOne({uri: uri}).owner == Meteor.userId();
 }
 
 Template.board_list.events({
     'click .remove_board': function(event, template) {
         Session.set('current_view_options', {
-            board_id: event.currentTarget.attributes["board-id"].value,
-            board_name: event.currentTarget.attributes["board-name"].value,
+            board_uri: event.currentTarget.attributes["board-uri"].value,
         });
     }
 });
@@ -103,16 +115,38 @@ Template.new_board.events({
 //### remove_board view
 
 Template.remove_board.boardname = function() {
-    console.debug();
-    return Session.get('current_view_options').board_name;
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri});
+
+    return (board) ? board.name : "";
 }
 
 Template.remove_board.events({
     'click .remove': function(event, template) {
-        var board_id = Session.get('current_view_options').board_id;
-        Boards.remove({_id: board_id});
+        var opts = Session.get('current_view_options');
+        var board = Boards.findOne({uri: opts.board_uri});
+        if (board) {
+            Boards.remove({uri: board.uri});
+        }
     }
 })
+
+//### board_view
+
+Template.board_view.boardname = Template.remove_board.boardname;
+
+Template.board_view.board_lists = function() {
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri});
+
+    if (!board) {
+        return [];
+    }
+    var list_ids = board.lists;
+    return Lists.find({_id: {$in: list_ids}});
+}
+
+//### Routing
 
 var AppRouter = Backbone.Router.extend({
     routes: {
@@ -121,20 +155,22 @@ var AppRouter = Backbone.Router.extend({
         "board/:board_uri": "board",
     },
 
+    // routing internal functions
+
     board_list: function() {
-        console.log("board_list: function () {");
         Session.set("current_view", "board_list");
         Session.set("current_view_options", {});
     },
 
     board: function (board_uri) {
-        console.log("board: function (board_uri) {");
-        Session.set("current_view", "board_view");
         Session.set("current_view_options", {board_uri: board_uri});
+        Session.set("current_view", "board_view");
     },
 
+    // navigation shortcuts
+
     showBoardList: function() {
-        this.navigate("", true);
+        this.navigate("boards", true);
     },
 
     showBoard: function(board_uri) {

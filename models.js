@@ -20,7 +20,7 @@ function randomId()
  * {
  *     name: String,
  *     description: String,
- *     lists_id: [String, ...],
+ *     lists: [String, ...],
  *
  *     owner: String,
  *     admins: [String, ...],
@@ -79,21 +79,21 @@ Meteor.methods({
 
         var created_at = new Date().getTime();
 
-        var todoList = Lists.insert({
+        var todoListId = Lists.insert({
             name: "Todo",
             cards: [],
             created_at: created_at,
             creator: this.userId
         });
 
-        var doingList = Lists.insert({
+        var doingListId = Lists.insert({
             name: "Doing",
             cards: [],
             created_at: created_at,
             creator: this.userId
         });
 
-        var doneList = Lists.insert({
+        var doneListId = Lists.insert({
             name: "Done",
             cards: [],
             created_at: created_at,
@@ -103,7 +103,7 @@ Meteor.methods({
         var board = Boards.insert({
             name: options.name,
             description: "",
-            lists_ids: [todoList._id, doingList._id, doneList._id],
+            lists: [todoListId, doingListId, doneListId],
             owner: this.userId,
             admins: [this.userId],
             members: [this.userId],
@@ -139,7 +139,7 @@ Lists = new Meteor.Collection("lists");
  *     title: String,
  *     description: String,
  *     members: [String, ...],
- *     subscribed_ids: [String, ..],
+ *     subscribed: [String, ..],
  *     created_at: Number,
  *     creator: String,
  *     uri: String,
