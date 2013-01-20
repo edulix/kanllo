@@ -12,11 +12,7 @@ Session.set('current_view_options', {});
 Session.set('modal_form_errors', '');
 
 // Always be subscribed to the todos for the selected list
-Meteor.autosubscribe(function () {
-    if (Meteor.userId()) {
-        Meteor.subscribe("boards");
-    }
-});
+Meteor.subscribe("boards");
 
 // Suscribe to cards and list if we have a board
 Meteor.autosubscribe(function () {
@@ -96,9 +92,10 @@ Template.new_board.events({
             Session.set("modal_form_errors", "");
             Meteor.call('createBoard', {
                 name: name,
-            }, function (error, board) {
-                if (! error) {
-                    Router.showBoard(board.uri);
+            }, function (error, board_uri) {
+                console.log("board_uri = " + board_uri);
+                if (!error) {
+                    Router.showBoard(board_uri);
                 } else {
                     alert("error creating the board, sorry");
                 }

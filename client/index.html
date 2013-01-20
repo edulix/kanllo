@@ -45,11 +45,13 @@
         {{#if equal currentView "board_list"}}
             {{> board_list}}
         {{/if}}
-        {{#if equal currentView "board_view"}}
-            {{> board_view}}
-        {{/if}}
     {{else}}
-        {{> home_anonymous}}
+        {{#if equal currentView "board_list"}}
+            {{> home_anonymous}}
+        {{/if}}
+    {{/if}}
+    {{#if equal currentView "board_view"}}
+        {{> board_view}}
     {{/if}}
 </template>
 

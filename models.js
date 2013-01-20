@@ -100,7 +100,9 @@ Meteor.methods({
             creator: this.userId
         });
 
-        var board = Boards.insert({
+        var uri = randomId();
+
+        var boardId = Boards.insert({
             name: options.name,
             description: "",
             lists: [todoListId, doingListId, doneListId],
@@ -110,11 +112,11 @@ Meteor.methods({
             invited: [],
             created_at: created_at,
             creator: this.userId,
-            is_public: false,
+            is_public: true,
             labels: [],
-            uri: randomId()
+            uri: uri
         });
-        return board;
+        return uri;
     }
 });
 
@@ -136,7 +138,7 @@ Lists = new Meteor.Collection("lists");
  *
  * Format:
  * {
- *     title: String,
+ *     name: String,
  *     description: String,
  *     members: [String, ...],
  *     subscribed: [String, ..],

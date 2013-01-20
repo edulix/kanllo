@@ -14,9 +14,6 @@ Meteor.publish('boards', function () {
 
 Meteor.publish('lists', function (board_uri) {
     var board = Boards.findOne({uri: board_uri});
-    console.log("lists publish: board = ");
-    console.log(board.lists);
-
     return Lists.find({_id: {$in: board.lists}});
 });
 
