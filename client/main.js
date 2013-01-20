@@ -16,8 +16,7 @@ Meteor.subscribe("boards");
 
 // Suscribe to cards and list if we have a board
 Meteor.autosubscribe(function () {
-    if (Meteor.userId() && Session.get('current_view') == "board_view") {
-
+    if (Session.get('current_view') == "board_view") {
         var board_uri = Session.get('current_view_options').board_uri;
         var board = Boards.findOne({uri: board_uri});
         if (board) {
@@ -64,6 +63,15 @@ Handlebars.registerHelper('modal_form_errors', function() {
 Template.content.currentView = function() {
     return Session.get('current_view');
 }
+
+//### home_anonymous view
+
+Template.home_anonymous.events({
+    'click .sign_in_activate': function(event) {
+        event.preventDefault();
+        $("#login-sign-in-link")[0].click();
+    }
+});
 
 //### board_list view
 
