@@ -187,7 +187,9 @@ Template.board_view.window_resize = function() {
     }
 }
 
-Template.board_view.board_lists = function() {
+//### board_view_list
+
+Template.board_view_list.board_lists = function() {
     var opts = Session.get('current_view_options');
     var board = Boards.findOne({uri: opts.board_uri});
 
@@ -197,6 +199,34 @@ Template.board_view.board_lists = function() {
     var list_ids = board.lists;
     return Lists.find({_id: {$in: list_ids}});
 }
+
+//### edit_board_name
+
+
+Template.edit_board_name.events({
+    /**
+     * When user click to update board name, send the petition to the server,
+     * create the board, and show it
+     */
+    'click .save' : function (event, template) {
+        var name = template.find("#boardname").value;
+        if (name.length > 5 && name.length < 140) {
+            Session.set("modal_form_errors", "");
+
+
+            var opts = Session.get('current_view_options');
+            var board = Boards.findOne({uri: opts.board_uri});
+            Boards.update({uri: opts.board_uri}, {$set: {'name': name}});
+
+            // hide it
+            $("#edit-board-close").click();
+        } else {
+            Session.set("modal_form_errors", "Name needs to be 5-140 characters long");
+        }
+    },
+});
+
+Template.edit_board_name.boardname = Template.board_view.boardname;
 
 //### Routing
 

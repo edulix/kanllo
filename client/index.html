@@ -181,6 +181,7 @@
 
 
 <template name="board_view">
+    {{> edit_board_name}}
     <div class="container-fluid short-padding">
         <header id="header"> </header>
         <section id="content">
@@ -200,27 +201,7 @@
                 <div class="span10 board-parent">
                     <div class="board">
                         <div id="list-list">
-                            {{#isolate}}
-                            {{#each board_lists}}
-                            <div id="board_list_{{_id}}" class="list ui-draggable ui-droppable">
-                                <div class="header ui-droppable">
-                                    <span class="name">{{name}}</span>
-                                    <a class="close" href="#">×</a>
-                                </div>
-                                <div class="cardoverflow" style="height: auto;">
-                                    <div class="cards">
-                                        <div id="board_card_id" class="task ui-draggable ui-droppable">
-                                            <span class="description">Pass pylint and jslint</span>
-                                            <ul class="pull-right inline onetaskmembers"></ul>
-                                            <div class="clear"></div>
-                                        </div>
-                                    </div>
-                                    <div class="newcardform"></div>
-                                </div>
-                                <div class="newcard muted">Add a card...</div>
-                            </div>
-                            {{/each}}
-                            {{/isolate}}
+                            {{> board_view_list}}
                         </div>
                     </div>
                 </div>
@@ -281,4 +262,53 @@
         </section>
     </div>
     {{#isolate}}{{window_resize}}{{/isolate}}
+</template>
+
+
+<template name="board_view_list">
+    {{#each board_lists}}
+    <div id="board_list_{{_id}}" class="list ui-draggable ui-droppable">
+        <div class="header ui-droppable">
+            <span class="name">{{name}}</span>
+            <a class="close" href="#">×</a>
+        </div>
+        <div class="cardoverflow" style="height: auto;">
+            <div class="cards">
+                <div id="board_card_id" class="task ui-draggable ui-droppable">
+                    <span class="description">Pass pylint and jslint</span>
+                    <ul class="pull-right inline onetaskmembers"></ul>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="newcardform"></div>
+        </div>
+        <div class="newcard muted">Add a card...</div>
+    </div>
+    {{/each}}
+</template>
+
+<template name="edit_board_name">
+    <div id="edit-board-modal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3><span class="boardname"></span></h3>
+        </div>
+        <div class="modal-body">
+            <form id="board-form" class="form-horizontal">
+            {{#isolate}}
+            <div class="control-group {{#if modal_form_errors}}error{{/if}}">
+                <label class="control-label" for="boardname">Board name</label>
+                <div class="controls">
+                    <input type="text" id="boardname" name="name" placeholder="board name" value="{{boardname}}"/>
+                    <a class="btn btn-success save" href="#">Update</a>
+                    <span class="help-inline">{{modal_form_errors}}</span>
+                </div>
+            </div>
+            {{/isolate}}
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button id="edit-board-close" class="btn" data-dismiss="modal">Close</button>
+        </div>
+    </div>
 </template>

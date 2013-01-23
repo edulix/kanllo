@@ -43,20 +43,20 @@ Boards.allow({
     return false; // no cowboy inserts -- use createBoard method
   },
   update: function (userId, boards, fields, modifier) {
-//     return _.all(boards, function (board) {
-//       if (userId !== board.owner && board.admins.indexOf(userId) == -1) {
-//         return false; // not the owner
-//       }
-// 
-//       var allowed = ["name", "description", "lists_id", ];
-//       if (_.difference(fields, allowed).length)
-//         return false; // tried to write to forbidden field
-// 
-//       // A good improvement would be to validate the type of the new
-//       // value of the field (and if a string, the length.) In the
-//       // future Meteor will have a schema system to makes that easier.
+    return _.all(boards, function (board) {
+      if (userId !== board.owner && board.admins.indexOf(userId) == -1) {
+        return false; // not the owner
+      }
+
+      var allowed = ["name", "description", "lists_id", ];
+      if (_.difference(fields, allowed).length)
+        return false; // tried to write to forbidden field
+
+      // TODO: A good improvement would be to validate the type of the new
+      // value of the field (and if a string, the length.) In the
+      // future Meteor will have a schema system to makes that easier.
       return true;
-//     });
+    });
   },
   remove: function (userId, boards) {
     return ! _.any(boards, function (board) {

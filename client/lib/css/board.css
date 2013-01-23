@@ -3,7 +3,7 @@
     padding-right: 0;
 }
 
-.right-menu {
+.row-fluid > .span2.right-menu {
     padding-right: 10px;
 }
 
