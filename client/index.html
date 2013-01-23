@@ -208,23 +208,7 @@
                 <div class="span2 right-menu">
                     <div class="top-menu">
                         <h4>Members</h4>
-                        <div class="member-lists">
-                            <ul class="inline admin">
-                                <span>
-                                    <li class="btn-group memberimg">
-                                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                                            <img title="danigm" alt="danigm" src="http://www.gravatar.com/avatar/8da96af78e0089d6d970bf3760b0e724.jpg?s=30&"/>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <img src="http://www.gravatar.com/avatar/8da96af78e0089d6d970bf3760b0e724.jpg?s=30&"/>danigm
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </span>
-                            </ul>
-                            <ul class="inline members"></ul>
-                        </div>
+                        {{>board_members_list}}
 
                         <div class="board-buttons">
                             <button class="btn" data-target="#member-modal" data-toggle="modal">
@@ -310,5 +294,44 @@
         <div class="modal-footer">
             <button id="edit-board-close" class="btn" data-dismiss="modal">Close</button>
         </div>
+    </div>
+</template>
+
+<template name="board_members_list">
+    <div class="member-lists">
+        <ul class="inline admin">
+            {{#each admins}}
+            <span>
+                <li class="btn-group memberimg">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <img title="{{username}}" alt="{{username}}" src="{{gravatar_url 30 _id}}"/>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <img src="{{gravatar_url 30 _id}}"/>Actions for {{username}}
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+            </span>
+            {{/each}}
+        </ul>
+        <ul class="inline members">
+            {{#each members}}
+            <span>
+                <li class="btn-group memberimg">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <img title="{{username}}" alt="{{username}}" src="{{gravatar_url 30 _id}}"/>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <img src="{{gravatar_url 30 _id}}"/>Actions for {{username}}
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+            </span>
+            {{/each}}
+        </ul>
     </div>
 </template>

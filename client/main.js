@@ -51,6 +51,15 @@ Handlebars.registerHelper('my_gravatar_url', function(size) {
     return "";
 });
 
+Handlebars.registerHelper('gravatar_url', function(size, user_id) {
+    var email = userEmail(Meteor.users.findOne({_id: user_id}));
+    if(email) {
+        var ret = $.gravatar_url(email, {'size': size});
+        return ret;
+    }
+    return "";
+});
+
 Handlebars.registerHelper('my_username', function(size) {
     return Meteor.user().username;
 });
@@ -92,6 +101,30 @@ Template.board_list.events({
         });
     }
 });
+
+//### board_members_list
+
+Template.board_members_list.admins = function() {
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri});
+    if (!board) {
+        return [];
+    }
+
+    var users = Meteor.users.find({_id: {$in: board.admins}});
+    return users;
+}
+
+Template.board_members_list.admins = function() {
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri});
+    if (!board) {
+        return [];
+    }
+
+    var users = Meteor.users.find({_id: {$in: board.members}});
+    return users;
+}
 
 //### new_board view
 
