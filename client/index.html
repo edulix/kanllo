@@ -198,8 +198,8 @@
             </div>
             <div class="row-fluid">
                 <div class="span10 board-parent">
-                    <div class="board" style="height: 1715px;">
-                        <div id="list-list" style="width: 669px;">
+                    <div class="board">
+                        <div id="list-list">
                             {{#isolate}}
                             {{#each board_lists}}
                             <div id="board_list_{{_id}}" class="list ui-draggable ui-droppable">
@@ -224,7 +224,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="span2 right-menu" style="height: 1715px;">
+                <div class="span2 right-menu">
                     <div class="top-menu">
                         <h4>Members</h4>
                         <div class="member-lists">
@@ -280,4 +280,5 @@
             </div>
         </section>
     </div>
+    {{#isolate}}{{window_resize}}{{/isolate}}
 </template>

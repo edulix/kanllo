@@ -11,6 +11,12 @@ Session.set('current_view_options', {});
 
 Session.set('modal_form_errors', '');
 
+/**
+ * Sesion var used to be able to get a new event call in a template everytime
+ * the window is resized
+ */
+Session.set("window_resize", new Date());
+
 // Always be subscribed to the todos for the selected list
 Meteor.subscribe("boards");
 
@@ -140,6 +146,47 @@ Template.remove_board.events({
 
 Template.board_view.boardname = Template.remove_board.boardname;
 
+
+// this will resize the board when the window is resized
+Template.board_view.window_resize = function() {
+    Session.get("window_resize"); // using it so that it's reacting to that
+
+    // function depends also on number of boards
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri});
+
+    // if the dom has not yet been created, then stop
+    if ($(".board").size() == 0 || !board) {
+        Meteor.setTimeout(function() {
+            Session.set("window_resize", new Date());
+        }, 500);
+        return;
+    }
+
+    var size = ($(window).height() - $(".board").offset().top - 30);
+    $(".board").css("height",  size + "px");
+
+    $(".cardoverflow").css("height", "auto");
+
+    if ($(window).width() <= 480) {
+        $("#list-list").css("width", "auto");
+    } else {
+        $(".right-menu").css("height", $(".board").height());
+        var width = board.lists.length * 223;
+        $("#list-list").css("width", width + "px");
+
+        var cardSize = (size - 80);
+        $(".cardoverflow").each(function() {
+            if ($(this).height() > cardSize)
+                $(this).css("height",  cardSize + "px");
+        });
+
+        // activity size
+        var activity_height = size - $("footer").height() - $(".top-menu").height();
+        $(".activity").css("height", activity_height + "px");
+    }
+}
+
 Template.board_view.board_lists = function() {
     var opts = Session.get('current_view_options');
     var board = Boards.findOne({uri: opts.board_uri});
@@ -186,5 +233,9 @@ var AppRouter = Backbone.Router.extend({
 Router = new AppRouter;
 
 Meteor.startup(function () {
-  Backbone.history.start({pushState: true});
+    Backbone.history.start({pushState: true});
+
+    $(window).resize(function(evt) {
+        Session.set("window_resize", new Date());
+    });
 });
