@@ -10,6 +10,7 @@ Session.set('current_view', 'board_list');
 Session.set('current_view_options', {});
 
 Session.set('modal_form_errors', '');
+Session.set('show_new_card_form', '')
 
 /**
  * Sesion var used to be able to get a new event call in a template everytime
@@ -28,6 +29,8 @@ Meteor.autosubscribe(function () {
         if (board) {
             console.log("subscribing to lists and cards");
             Meteor.subscribe("lists", board_uri);
+
+            Lists.find({_id: {$in: board.lists}});
             Meteor.subscribe("cards", board_uri);
         }
     }
@@ -137,16 +140,16 @@ Template.new_board.events({
         var name = template.find("#boardname").value;
         if (name.length > 5 && name.length < 140) {
             Session.set("modal_form_errors", "");
-            Meteor.call('createBoard', {
-                name: name,
-            }, function (error, board_uri) {
-                console.log("board_uri = " + board_uri);
-                if (!error) {
-                    Router.showBoard(board_uri);
-                } else {
-                    alert("error creating the board, sorry");
-                }
-            });
+                Meteor.call('createBoard', {
+                    name: name,
+                }, function (error, board_uri) {
+                    console.log("board_uri = " + board_uri);
+                    if (!error) {
+                        Router.showBoard(board_uri);
+                    } else {
+                        alert("error creating the board, sorry");
+                    }
+                });
 
             // hide it
             $("#new-board-close").click();
@@ -220,9 +223,7 @@ Template.board_view.window_resize = function() {
     }
 }
 
-//### board_view_list
-
-Template.board_view_list.board_lists = function() {
+Template.board_view.board_lists = function() {
     var opts = Session.get('current_view_options');
     var board = Boards.findOne({uri: opts.board_uri});
 
@@ -232,6 +233,46 @@ Template.board_view_list.board_lists = function() {
     var list_ids = board.lists;
     return Lists.find({_id: {$in: list_ids}});
 }
+
+
+//### board_view_list
+
+Template.board_view_list.card_list = function() {
+    return Cards.find({_id: {$in: this.cards}});
+}
+
+Template.board_view_list.show_new_card_form = function() {
+    return Session.get('show_new_card_form') == this._id;
+}
+
+
+Template.board_view_list.events({
+    /**
+     * When user clicks to add a new card
+     */
+    'click .newcard' : function (event, template) {
+        Session.set('show_new_card_form', this._id);
+    }
+});
+
+
+//### new_card_form
+
+Template.new_card_form.events({
+    /**
+     * When user clicks to add a new card
+     */
+    'click .close' : function (event, template) {
+        Session.set('show_new_card_form', '');
+    },
+
+    'click .save' : function (event, template) {
+        var list_id = this._id;
+        var name = template.find("#add_task_description").value;
+        Meteor.call('createCard', list_id, name);
+        Session.set('show_new_card_form', '');
+    }
+});
 
 //### edit_board_name
 
@@ -300,5 +341,11 @@ Meteor.startup(function () {
 
     $(window).resize(function(evt) {
         Session.set("window_resize", new Date());
+    });
+
+    $(document).on('click', 'a.internal-link', function (evt) {
+        var href = $(this).attr('href');
+        evt.preventDefault();
+        Router.navigate(href, true);
     });
 });

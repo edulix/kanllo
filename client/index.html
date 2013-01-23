@@ -19,10 +19,10 @@
                     Boards
                     </a>
                     <ul id="board-menu-list" class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                        <li><a href="/boards"><strong>My Boards</strong></a></li>
+                        <li><a href="/boards" class="internal-link"><strong>My Boards</strong></a></li>
                         <li class="divider"></li>
                         {{#each my_boards}}
-                        <li><a href="/board/{{uri}}">{{name}}</a></li>
+                        <li><a href="/board/{{uri}}" class="internal-link">{{name}}</a></li>
                         {{else}}
                         <li><a href="#" data-toggle="modal" data-target="#new-board">New board...</a></li>
                         {{/each}}
@@ -106,7 +106,7 @@
                     <ul id="board-list" class="unstyled bold-list">
                     {{#each my_boards}}
                         <li>
-                            <a href="/board/{{uri}}">{{name}}</a>
+                            <a href="/board/{{uri}}" class="internal-link">{{name}}</a>
                             {{#if can_remove_board uri}}
                                 <a class="close remove_board" data-toggle="modal" data-target="#remove-board" board-uri="{{uri}}" board-name="{{name}}" href="#">×</a>
                             {{/if}}
@@ -201,7 +201,9 @@
                 <div class="span10 board-parent">
                     <div class="board">
                         <div id="list-list">
-                            {{> board_view_list}}
+                            {{#each board_lists}}
+                                {{> board_view_list}}
+                            {{/each}}
                         </div>
                     </div>
                 </div>
@@ -250,7 +252,6 @@
 
 
 <template name="board_view_list">
-    {{#each board_lists}}
     <div id="board_list_{{_id}}" class="list ui-draggable ui-droppable">
         <div class="header ui-droppable">
             <span class="name">{{name}}</span>
@@ -258,17 +259,27 @@
         </div>
         <div class="cardoverflow" style="height: auto;">
             <div class="cards">
-                <div id="board_card_id" class="task ui-draggable ui-droppable">
-                    <span class="description">Pass pylint and jslint</span>
-                    <ul class="pull-right inline onetaskmembers"></ul>
-                    <div class="clear"></div>
-                </div>
+                {{#each card_list}}
+                    {{> board_card_item}}
+                {{/each}}
             </div>
-            <div class="newcardform"></div>
+            <div class="newcardform">
+            {{#if show_new_card_form}}
+                {{> new_card_form}}
+            {{/if}}
+            </div>
         </div>
         <div class="newcard muted">Add a card...</div>
     </div>
-    {{/each}}
+</template>
+
+<template name="board_card_item">
+    <div id="board_card_id" class="task ui-draggable ui-droppable">
+        <span class="description">{{name}}</span>
+        <ul class="pull-right inline onetaskmembers">
+        </ul>
+        <div class="clear"></div>
+    </div>
 </template>
 
 <template name="edit_board_name">
@@ -334,4 +345,14 @@
             {{/each}}
         </ul>
     </div>
+</template>
+
+<template name="new_card_form">
+    <form class="form">
+        <div class="description">
+        <textarea id="add_task_description" name="description"></textarea>
+        </div>
+        <a class="btn btn-info save">Add</a>
+        <a href="#" class="close">&times;</a>
+    </form>
 </template>
