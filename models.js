@@ -82,7 +82,10 @@ Meteor.methods({
 
         var created_at = new Date().getTime();
 
+        var uri = randomId();
+
         var todoListId = Lists.insert({
+            board_uri: uri,
             name: "Todo",
             cards: [],
             created_at: created_at,
@@ -90,6 +93,7 @@ Meteor.methods({
         });
 
         var doingListId = Lists.insert({
+            board_uri: uri,
             name: "Doing",
             cards: [],
             created_at: created_at,
@@ -97,13 +101,12 @@ Meteor.methods({
         });
 
         var doneListId = Lists.insert({
+            board_uri: uri,
             name: "Done",
             cards: [],
             created_at: created_at,
             creator: this.userId
         });
-
-        var uri = randomId();
 
         var boardId = Boards.insert({
             name: options.name,
@@ -119,6 +122,7 @@ Meteor.methods({
             labels: [],
             uri: uri
         });
+
         return uri;
     },
 
@@ -139,6 +143,7 @@ Meteor.methods({
         }
 
         var listId = Lists.insert({
+            board_uri: board.uri,
             name: name,
             cards: [],
             created_at: new Date().getTime(),
@@ -168,6 +173,7 @@ Meteor.methods({
         var uri = randomId();
 
         var cardId = Cards.insert({
+            board_uri: board.uri,
             name: name,
             description: "",
             members: [],
@@ -187,6 +193,7 @@ Meteor.methods({
  *
  * Format:
  * {
+ *     board_uri: String,
  *     name: String,
  *     cards: [String, ...],
  *     created_at: Number,
@@ -252,6 +259,7 @@ Lists.allow({
  *
  * Format:
  * {
+ *     board_uri: String,
  *     name: String,
  *     description: String,
  *     members: [String, ...],

@@ -27,10 +27,7 @@ Meteor.autosubscribe(function () {
         var board_uri = Session.get('current_view_options').board_uri;
         var board = Boards.findOne({uri: board_uri});
         if (board) {
-            console.log("subscribing to lists and cards");
             Meteor.subscribe("lists", board_uri);
-
-            Lists.find({_id: {$in: board.lists}});
             Meteor.subscribe("cards", board_uri);
         }
     }
@@ -75,6 +72,25 @@ Handlebars.registerHelper('my_boards', function() {
 Handlebars.registerHelper('modal_form_errors', function() {
     return Session.get('modal_form_errors');
 });
+
+
+/**
+ * Useful function to sort a Meteor.cursor list of items by a list of ids
+ */
+function sort_by_ids(list_cursor, list_ids) {
+    var lists = list_cursor.map(function (l) { return l;});
+    var ordered_list = [];
+
+    for(var i in list_ids) {
+        for(var j in lists) {
+            if (lists[j]._id == list_ids[i]) {
+                ordered_list.push(lists[j]);
+                break;
+            }
+        }
+    }
+    return ordered_list;
+}
 
 //### content view
 
@@ -190,7 +206,8 @@ Template.board_view.board_lists = function() {
         return [];
     }
     var list_ids = board.lists;
-    return Lists.find({_id: {$in: list_ids}});
+    var lists = Lists.find({board_uri: opts.board_uri}).map(function (l) { return l;});
+    return sort_by_ids(lists, list_ids);
 }
 
 //### board_window_resize
@@ -244,7 +261,8 @@ Template.board_window_resize.rendered = function () {
 //### board_view_list
 
 Template.board_view_list.card_list = function() {
-    return Cards.find({_id: {$in: this.cards}});
+    var cards = Cards.find({_id: {$in: this.cards}});
+    return sort_by_ids(cards, this.cards);
 }
 
 Template.board_view_list.show_new_card_form = function() {

@@ -13,18 +13,11 @@ Meteor.publish('boards', function () {
 });
 
 Meteor.publish('lists', function (board_uri) {
-    var board = Boards.findOne({uri: board_uri});
-    return Lists.find({_id: {$in: board.lists}});
+    return Lists.find({board_uri: board_uri});
 });
 
 Meteor.publish('cards', function (board_uri) {
-//     var board = Boards.findOne({uri: board_uri});
-//     var card_ids = [];
-//     var lists = Lists.find({_id: {$in: board.lists}}).forEach(function (l) {
-//         card_ids.concat(l.cards);
-//     });
-//     return Cards.find({_id: {$in: card_ids}});
-    return Cards.find();
+    return Cards.find({board_uri: board_uri});
 });
 
 // Accounts configuration
