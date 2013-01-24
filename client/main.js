@@ -66,7 +66,7 @@ Handlebars.registerHelper('my_username', function(size) {
 
 
 Handlebars.registerHelper('my_boards', function() {
-    return Boards.find();
+    return Boards.find({members: Meteor.userId()});
 });
 
 Handlebars.registerHelper('modal_form_errors', function() {
@@ -267,6 +267,12 @@ Template.board_view_list.card_list = function() {
 
 Template.board_view_list.show_new_card_form = function() {
     return Session.get('show_new_card_form') == this._id;
+}
+
+Template.board_view_list.can_add_card = function() {
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri, members: Meteor.userId()});
+    return board;
 }
 
 

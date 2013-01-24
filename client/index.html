@@ -272,7 +272,9 @@
             {{/if}}
             </div>
         </div>
-        <div class="newcard muted">Add a card...</div>
+        {{#if can_add_card}}
+            <div class="newcard muted">Add a card...</div>
+        {{/if}}
     </div>
 </template>
 
