@@ -182,9 +182,21 @@ Template.remove_board.events({
 
 Template.board_view.boardname = Template.remove_board.boardname;
 
+Template.board_view.board_lists = function() {
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri});
+
+    if (!board) {
+        return [];
+    }
+    var list_ids = board.lists;
+    return Lists.find({_id: {$in: list_ids}});
+}
+
+//### board_window_resize
 
 // this will resize the board when the window is resized
-Template.board_view.window_resize = function() {
+Template.board_window_resize.window_resize = function() {
     Session.get("window_resize"); // using it so that it's reacting to that
 
     // function depends also on number of boards
@@ -194,10 +206,11 @@ Template.board_view.window_resize = function() {
     // if the dom has not yet been created, then stop
     if ($(".board").size() == 0 || !board) {
         Meteor.setTimeout(function() {
-            Session.set("window_resize", new Date());
-        }, 500);
+            Template.board_window_resize.window_resize();
+        }, 1000);
         return;
     }
+    console.log("rendered");
 
     var size = ($(window).height() - $(".board").offset().top - 30);
     $(".board").css("height",  size + "px");
@@ -223,16 +236,9 @@ Template.board_view.window_resize = function() {
     }
 }
 
-Template.board_view.board_lists = function() {
-    var opts = Session.get('current_view_options');
-    var board = Boards.findOne({uri: opts.board_uri});
-
-    if (!board) {
-        return [];
-    }
-    var list_ids = board.lists;
-    return Lists.find({_id: {$in: list_ids}});
-}
+Template.board_window_resize.rendered = function () {
+    Template.board_window_resize.window_resize();
+};
 
 
 //### board_view_list
@@ -321,6 +327,7 @@ var AppRouter = Backbone.Router.extend({
     board: function (board_uri) {
         Session.set("current_view_options", {board_uri: board_uri});
         Session.set("current_view", "board_view");
+        console.log("calling to window resize");
     },
 
     // navigation shortcuts

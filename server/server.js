@@ -34,6 +34,3 @@ Accounts.emailTemplates.from = Accounts.emailTemplates.siteName + " admins <admi
 Accounts.emailTemplates.enrollAccount.subject = function (user) {
     return "Welcome to " + Accounts.emailTemplates.siteName + ", " + user.profile.name;
 };
-// Accounts.ui.config({
-//   passwordSignupFields: 'USERNAME_AND_EMAIL'
-// });

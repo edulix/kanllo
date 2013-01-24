@@ -247,9 +247,12 @@
             </div>
         </section>
     </div>
-    {{#isolate}}{{window_resize}}{{/isolate}}
+    {{> board_window_resize}}
 </template>
 
+<template name="board_window_resize">
+{{window_resize}}
+</template>
 
 <template name="board_view_list">
     <div id="board_list_{{_id}}" class="list ui-draggable ui-droppable">
