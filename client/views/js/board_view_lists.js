@@ -59,7 +59,7 @@ Template.board_new_list.events({
                 });
 
             // reset form
-            template.find("#listname").value('');
+            template.find("#listname").value = '';
 
             // hide it
             $("#new-list-close").click();
@@ -67,6 +67,16 @@ Template.board_new_list.events({
             Session.set("modal_form_errors", "Name needs to be 5-140 characters long");
         }
     },
+
+    /**
+     * On <Enter>, create the list
+     */
+    'keypress #listname' : function (event, template) {
+        if (event.which == 13) {
+            event.preventDefault();
+            template.find('.save').click();
+        }
+    }
 });
 
 Template.board_new_list.boardname = Template.board_view.boardname;
@@ -125,6 +135,4 @@ Template.board_list_name.events({
             Session.set('show_edit_list_name', '');
         }
     },
-
-    // TODO: focus input.listname when it shows
 });

@@ -14,6 +14,28 @@ Template.board_view.board_lists = function() {
     return sort_by_ids(lists, list_ids);
 }
 
+Template.board_view.events({
+    /**
+     * Focus edit board input when modal dialog shown
+     */
+    'click .edit-board-link' : function (event, template) {
+        Meteor.setTimeout(function () {
+        $("#edit-board-modal input").select().focus();
+        }, 300);
+    },
+
+
+    /**
+     * Same for add list dialog
+     */
+    'click .add-list-link' : function (event, template) {
+        Meteor.setTimeout(function () {
+        $("#board-new-list-modal input").focus();
+        }, 300);
+    },
+});
+
+
 //### board_window_resize
 
 // this will resize the board when the window is resized
@@ -87,7 +109,6 @@ Template.board_members_list.admins = function() {
 
 //### edit_board_name
 
-
 Template.edit_board_name.events({
     /**
      * When user click to update board name, send the petition to the server,
@@ -109,6 +130,16 @@ Template.edit_board_name.events({
             Session.set("modal_form_errors", "Name needs to be 5-140 characters long");
         }
     },
+
+    /**
+     * On <Enter>, save the board
+     */
+    'keypress #boardname' : function (event, template) {
+        if (event.which == 13) {
+            event.preventDefault();
+            template.find('.save').click();
+        }
+    }
 });
 
 Template.edit_board_name.boardname = Template.board_view.boardname;
