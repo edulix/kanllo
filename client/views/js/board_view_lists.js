@@ -16,13 +16,23 @@ Template.board_view_list.can_add_card = function() {
     return board;
 }
 
-
 Template.board_view_list.events({
     /**
      * When user clicks to add a new card
      */
     'click .newcard' : function (event, template) {
         Session.set('show_new_card_form', this._id);
+    },
+
+    /**
+     * When user clicks to remove a list
+     */
+    'click .close.remove_list': function (event, template) {
+        Meteor.call('removeList', {list_id: this._id}, function (error) {
+            if (error) {
+                alert("error removing the list, sorry");
+            }
+        });
     }
 });
 

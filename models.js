@@ -68,6 +68,10 @@ Boards.allow({
 
 
 Meteor.methods({
+    /**
+     * Creates a new board, with three empty lists by default:
+     * Todo, Doing & Done
+     */
     createBoard: function (options)
     {
         if (!this.userId) {
@@ -126,6 +130,9 @@ Meteor.methods({
         return uri;
     },
 
+    /**
+     * Creates a list in a board if you have board edit perms
+     */
     createList: function (options) {
         var board = Boards.findOne(
             {$and: [
@@ -156,6 +163,34 @@ Meteor.methods({
         return listId;
     },
 
+    /**
+     * Removes a list and all its cards, if you have edit permissions in the
+     * board
+     */
+    removeList: function (options) {
+        var list = Lists.findOne({_id: options.list_id});
+
+        if (!list) {
+            throw new Meteor.Error(404, "List not found");
+        }
+
+        var board = Boards.findOne(
+            {$and: [
+                {uri: list.board_uri},
+                {members: this.userId},
+            ]});
+
+        if (!board) {
+            throw new Meteor.Error(400, "Invalid permissions");
+        }
+
+        Cards.remove({board_uri: board.uri, _id: {$in: list.cards}});
+        Lists.remove({_id: list._id});
+    },
+
+    /**
+     * Creates a card in a board list, if you have board edit perms
+     */
     createCard: function (list_id, name) {
         var board = Boards.findOne(
             {$and: [
@@ -249,10 +284,8 @@ Lists.allow({
         });
     },
     remove: function (userId, lists) {
-        return ! _.any(lists, function (list) {
-            var board = Boards.findOne({lists: list._id});
-            return board && board.owner == userId;
-        });
+        // use removeList instead
+        return false;
     }
 });
 
