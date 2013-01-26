@@ -1,0 +1,209 @@
+<template name="board_view">
+    {{> edit_board_name}}
+    {{> board_new_list}}
+    <div class="container-fluid short-padding">
+        <header id="header"> </header>
+        <section id="content">
+            <div class="row-fluid">
+                <div class="span12 board-header">
+                    <h4>
+                        {{#isolate}}
+                        <span class="boardname">{{boardname}}</span>
+                        {{/isolate}}
+                        <a href="#" data-target="#edit-board-modal" data-toggle="modal">
+                            <i class="icon-pencil"></i>
+                        </a>
+                    </h4>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span10 board-parent">
+                    <div class="board">
+                        <div id="list-list">
+                            {{#each board_lists}}
+                                {{> board_view_list}}
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="span2 right-menu">
+                    <div class="top-menu">
+                        <h4>Members</h4>
+                        {{>board_members_list}}
+
+                        <div class="board-buttons">
+                            <button class="btn" data-target="#member-modal" data-toggle="modal">
+                                <i class="icon-user"></i>
+                                Add Members
+                            </button>
+                        </div>
+
+                        <h4>Board</h4>
+
+                        <div class="board-buttons">
+                            <button class="btn" data-target="#board-new-list-modal" data-toggle="modal">
+                                <i class="icon-list"></i>
+                                Add List
+                            </button>
+                            <button class="btn">
+                                <i class="icon-wrench"></i>
+                                Options
+                            </button>
+                        </div>
+
+                        <h4>Activity</h4>
+                    </div>
+
+                    <div class="activity" style="height: 1412px;"> </div>
+                        <footer>
+                            <a href="http://wadobo.com">
+                                <img id="wadobolabsimg" src="/wadobolabs.png" alt="powered by wadobolabs">
+                            </a>
+                            <a href="https://github.com/edulix/kanllo">code</a>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    {{> board_window_resize}}
+</template>
+
+<template name="board_window_resize">
+{{window_resize}}
+</template>
+
+<template name="board_view_list">
+    <div id="board_list_{{_id}}" class="list ui-draggable ui-droppable">
+        <div class="header ui-droppable">
+            <span class="name">{{name}}</span>
+            <a class="close" href="#">×</a>
+        </div>
+        <div class="cardoverflow" style="height: auto;">
+            <div class="cards">
+                {{#each card_list}}
+                    {{> board_card_item}}
+                {{/each}}
+            </div>
+            <div class="newcardform">
+            {{#if show_new_card_form}}
+                {{> new_card_form}}
+            {{/if}}
+            </div>
+        </div>
+        {{#if can_add_card}}
+            <div class="newcard muted">Add a card...</div>
+        {{/if}}
+    </div>
+</template>
+
+<template name="board_card_item">
+    <div id="board_card_id" class="task ui-draggable ui-droppable">
+        <span class="description">{{name}}</span>
+        <ul class="pull-right inline onetaskmembers">
+        </ul>
+        <div class="clear"></div>
+    </div>
+</template>
+
+<template name="edit_board_name">
+    <div id="edit-board-modal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3><span class="boardname">{{boardname}}</span></h3>
+        </div>
+        <div class="modal-body">
+            <form id="board-form" class="form-horizontal">
+            {{#isolate}}
+            <div class="control-group {{#if modal_form_errors}}error{{/if}}">
+                <label class="control-label" for="boardname">Board name</label>
+                <div class="controls">
+                    <input type="text" id="boardname" name="name" placeholder="board name" value="{{boardname}}"/>
+                    <a class="btn btn-success save" href="#">Update</a>
+                    <span class="help-inline">{{modal_form_errors}}</span>
+                </div>
+            </div>
+            {{/isolate}}
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button id="edit-board-close" class="btn" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</template>
+
+
+<template name="board_new_list">
+    <div id="board-new-list-modal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>New List</h3>
+        </div>
+        <div class="modal-body">
+            <form id="board-form" class="form-horizontal">
+            {{#isolate}}
+            <div class="control-group {{#if modal_form_errors}}error{{/if}}">
+                <label class="control-label" for="listname">List name</label>
+                <div class="controls">
+                    <input type="text" id="listname" name="listname" placeholder="list name" />
+                    <a class="btn btn-success save" href="#">Add</a>
+                    <span class="help-inline">{{modal_form_errors}}</span>
+                </div>
+            </div>
+            {{/isolate}}
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button id="new-list-close" class="btn" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</template>
+
+<template name="board_members_list">
+    <div class="member-lists">
+        <ul class="inline admin">
+            {{#each admins}}
+            <span>
+                <li class="btn-group memberimg">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <img title="{{username}}" alt="{{username}}" src="{{gravatar_url 30 _id}}"/>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <img src="{{gravatar_url 30 _id}}"/>Actions for {{username}}
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+            </span>
+            {{/each}}
+        </ul>
+        <ul class="inline members">
+            {{#each members}}
+            <span>
+                <li class="btn-group memberimg">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                        <img title="{{username}}" alt="{{username}}" src="{{gravatar_url 30 _id}}"/>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <img src="{{gravatar_url 30 _id}}"/>Actions for {{username}}
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+            </span>
+            {{/each}}
+        </ul>
+    </div>
+</template>
+
+<template name="new_card_form">
+    <form class="form">
+        <div class="description">
+        <textarea id="add_task_description" name="description"></textarea>
+        </div>
+        <a class="btn btn-info save">Add</a>
+        <a href="#" class="close">&times;</a>
+    </form>
+</template>

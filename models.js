@@ -126,10 +126,10 @@ Meteor.methods({
         return uri;
     },
 
-    createList: function (board_id, name) {
+    createList: function (options) {
         var board = Boards.findOne(
             {$and: [
-                {_id: board_id},
+                {uri: options.board_uri},
                 {members: this.userId},
             ]});
 
@@ -138,19 +138,21 @@ Meteor.methods({
         }
 
 
-        if (!(typeof name === "string" && name.length > 3 && name.length < 140)) {
+        if (!(typeof options.name === "string" && options.name.length > 0
+            && options.name.length < 140))
+        {
             throw new Meteor.Error(400, "Invalid name");
         }
 
         var listId = Lists.insert({
-            board_uri: board.uri,
-            name: name,
+            board_uri: options.board_uri,
+            name: options.name,
             cards: [],
             created_at: new Date().getTime(),
             creator: this.userId,
         });
 
-        Boards.update({_id: board_id}, {$addToSet: {lists: listId}});
+        Boards.update({uri: options.board_uri}, {$addToSet: {lists: listId}});
         return listId;
     },
 
@@ -166,7 +168,7 @@ Meteor.methods({
         }
 
 
-        if (!(typeof name === "string" && name.length > 3 && name.length < 140)) {
+        if (!(typeof name === "string" && name.length > 0 && name.length < 140)) {
             throw new Meteor.Error(400, "Invalid name");
         }
 

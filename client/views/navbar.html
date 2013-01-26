@@ -1,0 +1,30 @@
+<template name="navbar">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="/">Kanllo</a>
+            <ul class="nav">
+                {{#if currentUser}}
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                    Boards
+                    </a>
+                    <ul id="board-menu-list" class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        <li><a href="/boards" class="internal-link"><strong>My Boards</strong></a></li>
+                        <li class="divider"></li>
+                        {{#each my_boards}}
+                        <li><a href="/board/{{uri}}" class="internal-link">{{name}}</a></li>
+                        {{else}}
+                        <li><a href="#" data-toggle="modal" data-target="#new-board">New board...</a></li>
+                        {{/each}}
+                    </ul>
+                </li>
+                {{else}}
+                <li class="active"><a href="/">Home</a></li>
+                {{/if}}
+            </ul>
+            <ul class="nav pull-right">
+                <li>{{loginButtons align="right"}}</li>
+            </ul>
+        </div>
+    </div>
+</template>
