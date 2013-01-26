@@ -14,6 +14,31 @@ Template.board_view.board_lists = function() {
     return sort_by_ids(lists, list_ids);
 }
 
+
+//### board_members_list
+
+Template.board_members_list.admins = function() {
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri});
+    if (!board) {
+        return [];
+    }
+
+    var users = Meteor.users.find({_id: {$in: board.admins}});
+    return users;
+}
+
+Template.board_members_list.admins = function() {
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri});
+    if (!board) {
+        return [];
+    }
+
+    var users = Meteor.users.find({_id: {$in: board.members}});
+    return users;
+}
+
 //### board_window_resize
 
 // this will resize the board when the window is resized
@@ -61,30 +86,6 @@ Template.board_window_resize.rendered = function () {
     Template.board_window_resize.window_resize();
 };
 
-//### board_members_list
-
-Template.board_members_list.admins = function() {
-    var opts = Session.get('current_view_options');
-    var board = Boards.findOne({uri: opts.board_uri});
-    if (!board) {
-        return [];
-    }
-
-    var users = Meteor.users.find({_id: {$in: board.admins}});
-    return users;
-}
-
-Template.board_members_list.admins = function() {
-    var opts = Session.get('current_view_options');
-    var board = Boards.findOne({uri: opts.board_uri});
-    if (!board) {
-        return [];
-    }
-
-    var users = Meteor.users.find({_id: {$in: board.members}});
-    return users;
-}
-
 //### edit_board_name
 
 
@@ -112,4 +113,5 @@ Template.edit_board_name.events({
 });
 
 Template.edit_board_name.boardname = Template.board_view.boardname;
+
 
