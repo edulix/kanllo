@@ -9,7 +9,16 @@ Template.board_list.events({
         Session.set('current_view_options', {
             board_uri: event.currentTarget.attributes["board-uri"].value,
         });
-    }
+    },
+
+    /**
+     * select board name when new board dialog appears
+     */
+    'click .new-board-link' : function (event, template) {
+        Meteor.setTimeout(function () {
+        $("#new-board input").focus();
+        }, 300);
+    },
 });
 
 //### new_board view
@@ -40,6 +49,16 @@ Template.new_board.events({
             Session.set("modal_form_errors", "It needs a name (5-140 characters)");
         }
     },
+
+    /**
+     * On <Enter>, save the board
+     */
+    'keypress #boardname' : function (event, template) {
+        if (event.which == 13) {
+            event.preventDefault();
+            template.find('.save').click();
+        }
+    }
 });
 
 //### remove_board view

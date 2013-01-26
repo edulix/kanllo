@@ -24,7 +24,6 @@ Template.board_view.events({
         }, 300);
     },
 
-
     /**
      * Same for add list dialog
      */
