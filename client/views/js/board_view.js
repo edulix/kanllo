@@ -14,6 +14,12 @@ Template.board_view.board_lists = function() {
     return sort_by_ids(lists, list_ids);
 }
 
+Template.board_view.can_edit = function() {
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri, members: Meteor.userId()});
+    return board;
+}
+
 Template.board_view.events({
     /**
      * Focus edit board input when modal dialog shown

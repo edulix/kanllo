@@ -10,9 +10,11 @@
                         {{#isolate}}
                         <span class="boardname">{{boardname}}</span>
                         {{/isolate}}
+                        {{#if can_edit}}
                         <a href="#" class="edit-board-link" data-target="#edit-board-modal" data-toggle="modal">
                             <i class="icon-pencil"></i>
                         </a>
+                        {{/if}}
                     </h4>
                 </div>
             </div>
@@ -31,20 +33,24 @@
                         <h4>Members</h4>
                         {{>board_members_list}}
 
+                        {{#if can_edit}}
                         <div class="board-buttons">
                             <button class="btn" data-target="#member-modal" data-toggle="modal">
                                 <i class="icon-user"></i>
                                 Add Members
                             </button>
                         </div>
+                        {{/if}}
 
                         <h4>Board</h4>
 
                         <div class="board-buttons">
+                            {{#if can_edit}}
                             <button class="btn add-list-link" data-target="#board-new-list-modal" data-toggle="modal">
                                 <i class="icon-list"></i>
                                 Add List
                             </button>
+                            {{/if}}
                             <button class="btn">
                                 <i class="icon-wrench"></i>
                                 Options

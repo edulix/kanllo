@@ -124,7 +124,9 @@ Template.board_list_name.events({
      * Show the list name edit form when user clicks in the list name
      */
     'click .name' : function (event, template) {
-        Session.set('show_edit_list_name', this._id);
+        if (Template.board_list_name.can_edit()) {
+            Session.set('show_edit_list_name', this._id);
+        }
     },
 
     /**
