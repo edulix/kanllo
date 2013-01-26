@@ -7,10 +7,10 @@ Template.board_view_list.card_list = function() {
 }
 
 Template.board_view_list.show_new_card_form = function() {
-    return Session.get('show_new_card_form') == this._id;
+    return Session.equals('show_new_card_form', this._id);
 }
 
-Template.board_view_list.can_add_card = function() {
+Template.board_view_list.can_edit = function() {
     var opts = Session.get('current_view_options');
     var board = Boards.findOne({uri: opts.board_uri, members: Meteor.userId()});
     return board;
@@ -58,6 +58,9 @@ Template.board_new_list.events({
                     }
                 });
 
+            // reset form
+            template.find("#listname").value('');
+
             // hide it
             $("#new-list-close").click();
         } else {
@@ -67,3 +70,61 @@ Template.board_new_list.events({
 });
 
 Template.board_new_list.boardname = Template.board_view.boardname;
+
+
+//### board_list_name
+
+Template.board_list_name.edit_name = function() {
+    return Session.equals('show_edit_list_name', this._id);
+}
+
+/**
+ * Select form text input when rerendered
+ */
+Template.board_list_name.rendered = function () {
+    if (Session.equals('show_edit_list_name', this.data._id)) {
+        this.find("input.listname").select();
+        this.find("input.listname").focus();
+    }
+}
+
+Template.board_list_name.can_edit = Template.board_view_list.can_edit;
+
+Template.board_list_name.events({
+    /**
+     * Saves the new list name
+     */
+    'click .save' : function (event, template) {
+        var name = template.find("input.listname").value;
+        Lists.update({_id: this._id}, {$set: {name: name}});
+        event.preventDefault();
+        event.stopPropagation();
+        Session.set('show_edit_list_name', '');
+    },
+
+    /**
+     * Closes the list name save form
+     */
+    'click .close' : function (event, template) {
+        event.stopPropagation();
+        Session.set('show_edit_list_name', '');
+    },
+
+    /**
+     * Show the list name edit form when user clicks in the list name
+     */
+    'click .name' : function (event, template) {
+        Session.set('show_edit_list_name', this._id);
+    },
+
+    /**
+     * Saves on <Enter> pressed, closes the form on <Esc>
+     */
+    'keyup .listname' : function (event, template) {
+        if (event.which == 27) { // <Esc>
+            Session.set('show_edit_list_name', '');
+        }
+    },
+
+    // TODO: focus input.listname when it shows
+});

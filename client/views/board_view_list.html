@@ -1,8 +1,7 @@
 <template name="board_view_list">
     <div id="board_list_{{_id}}" class="list ui-draggable ui-droppable">
         <div class="header ui-droppable">
-            <span class="name">{{name}}</span>
-            <a class="close remove_list" href="#">×</a>
+            {{>board_list_name}}
         </div>
         <div class="cardoverflow" style="height: auto;">
             <div class="cards">
@@ -16,10 +15,27 @@
             {{/if}}
             </div>
         </div>
-        {{#if can_add_card}}
+        {{#if can_edit}}
             <div class="newcard muted">Add a card...</div>
         {{/if}}
     </div>
+</template>
+
+<template name="board_list_name">
+    <span class="name">
+    {{#if edit_name}}
+        <form class="form-horizontal">
+            <input class="input-small listname" type="text" value="{{name}}" name="name">
+            <input class="btn btn-info save" type="submit" value="Save">
+            <a class="close" href="#">×</a>
+        </form>
+    {{else}}
+        {{name}}
+        {{#if can_edit}}
+            <a class="close remove_list" href="#">×</a>
+        {{/if}}
+    {{/if}}
+    </span>
 </template>
 
 <template name="board_card_item">
