@@ -102,11 +102,22 @@ function dropTaskOver(e, ui) {
 
 Template.board_card_item.rendered = function () {
     makeTaskDraggable(this.firstNode);
+
+    var card_uri = Session.get('show_card_form');
+
+    if (card_uri == this.data.uri) {
+        $("#show-task-view")[0].click();
+    }
+}
+
+Template.board_card_item.card_link = function () {
+    var opts = Session.get('current_view_options');
+    return "/board/" + opts.board_uri + "/card/" + this.uri;
 }
 
 Template.board_card_item.events({
     'click .task': function(event, template) {
-        Session.set('show_card_form', this._id);
+        Session.set('show_card_form', this.uri);
         $('#show-task-view')[0].click();
     },
 });
@@ -114,8 +125,8 @@ Template.board_card_item.events({
 //### card_view
 
 function getCard() {
-    var card_id = Session.get('show_card_form');
-    return Cards.findOne({_id: card_id});
+    var card_uri = Session.get('show_card_form');
+    return Cards.findOne({uri: card_uri});
 }
 
 Template.card_view.cardname = function() {
@@ -147,19 +158,32 @@ Template.card_view.can_edit = function() {
     return Boards.findOne({uri: opts.board_uri, members: Meteor.userId()});
 }
 
+Template.card_view.rendered = function() {
+    // TODO: it's not being called
+    $('#task-view-modal').on('hidden', function () {
+        var opts = Session.get('current_view_options');
+        Router.navigate('board/' + opts.board_uri);
+    });
+}
+
 Template.card_view.events({
     'click .remove-action': function(event, template) {
-        var card_id = Session.get('show_card_form');
+        var card = getCard();
         var list = getListForCard();
-        if (!list) {
+        if (!card || !list) {
             $('.close-task-view')[0].click();
             return;
         }
 
-        Lists.update({_id: list._id}, {$pull: {cards: card_id}});
-        Cards.remove({_id: card_id});
+        Lists.update({_id: list._id}, {$pull: {cards: card._id}});
+        Cards.remove({_id: card._id});
 
         $('.close-task-view')[0].click();
         Session.set('show_card_form', '');
+    },
+
+    'click .close' : function() {
+        var opts = Session.get('current_view_options');
+        Router.navigate('board/' + opts.board_uri);
     },
 });

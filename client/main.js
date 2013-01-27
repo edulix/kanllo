@@ -51,6 +51,7 @@ var AppRouter = Backbone.Router.extend({
         "": "board_list",
         "boards": "board_list",
         "board/:board_uri": "board",
+        "board/:board_uri/card/:card_uri": "card",
     },
 
     // routing internal functions
@@ -63,7 +64,12 @@ var AppRouter = Backbone.Router.extend({
     board: function (board_uri) {
         Session.set("current_view_options", {board_uri: board_uri});
         Session.set("current_view", "board_view");
-        console.log("calling to window resize");
+    },
+
+    card: function (board_uri, card_uri) {
+        Session.set("current_view_options", {board_uri: board_uri});
+        Session.set("current_view", "board_view");
+        Session.set("show_card_form", card_uri);
     },
 
     // navigation shortcuts
@@ -74,6 +80,10 @@ var AppRouter = Backbone.Router.extend({
 
     showBoard: function(board_uri) {
         this.navigate("board/" + board_uri, true);
+    },
+
+    showCard: function(board_uri, card_uri) {
+        this.navigate("board/" + board_uri + "/card/" + card_uri, true);
     }
 });
 
@@ -86,7 +96,7 @@ Meteor.startup(function () {
         Session.set("window_resize", new Date());
     });
 
-    $(document).on('click', 'a.internal-link', function (evt) {
+    $(document).on('click', '.internal-link', function (evt) {
         var href = $(this).attr('href');
         evt.preventDefault();
         Router.navigate(href, true);
