@@ -12,17 +12,21 @@
     <div id="task-view-modal" class="modal hide fade">
         <div class="modal-body">
             {{#isolate}}
+            {{#if edit_cardname}}
+            <form class="name-form" class="form">
+                <div class="description">
+                    <textarea id="card_name_edit" name="description">{{cardname}}</textarea>
+                </div>
+                <input class="btn btn-info save" type="submit" value="Save"/>
+                <a href="#" class="close close-card-edit">&times;</a>
+            </form>
+            {{else}}
             <button type="button" class="close close-task-view" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="header"><span class="taskname">{{cardname}}</span><span class="muted">in list <span class="listname text-info">{{listname}}</span></span></h4>
+            <h4 class="header"><span class="taskname">{{cardname}}</span> <span class="muted">in list <span class="listname text-info">{{listname}}</span></span></h4>
+            {{/if}}
             <div class="row-fluid">
                 <div class="span8 main">
-                    <!--<form class="name-form" class="form" data-url="">
-                        <div class="description">
-                            <textarea name="description"></textarea>
-                        </div>
-                        <input class="btn btn-info" type="submit" value="Save"/>
-                        <a href="#" class="close">&times;</a>
-                    </form>-->
+                    
                 </div>
                 <div class="span4 menu">
                     <h4>Actions</h4>

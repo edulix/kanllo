@@ -69,7 +69,11 @@ var AppRouter = Backbone.Router.extend({
     card: function (board_uri, card_uri) {
         Session.set("current_view_options", {board_uri: board_uri});
         Session.set("current_view", "board_view");
-        Session.set("show_card_form", card_uri);
+        if (Router.loading) {
+            Session.set("show_card_form", "loading_" + card_uri);
+        } else {
+            Session.set("show_card_form", card_uri);
+        }
     },
 
     // navigation shortcuts
@@ -90,7 +94,9 @@ var AppRouter = Backbone.Router.extend({
 Router = new AppRouter;
 
 Meteor.startup(function () {
+    Router.loading = true;
     Backbone.history.start({pushState: true});
+    Router.loading = false;
 
     $(window).resize(function(evt) {
         Session.set("window_resize", new Date());

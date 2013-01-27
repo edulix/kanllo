@@ -172,7 +172,7 @@ Template.board_list_name.events({
      * Saves the new list name
      */
     'click .save' : function (event, template) {
-        var name = template.find("input.listname").value;
+        var name = template.find("input.listname").value.trim();
         Lists.update({_id: this._id}, {$set: {name: name}});
         event.preventDefault();
         event.stopPropagation();

@@ -103,9 +103,18 @@ function dropTaskOver(e, ui) {
 Template.board_card_item.rendered = function () {
     makeTaskDraggable(this.firstNode);
 
+    // All the following code logic launches show card dialog when user enters
+    // directly to a card url
     var card_uri = Session.get('show_card_form');
 
-    if (card_uri == this.data.uri) {
+    if(!card_uri.startsWith("loading_")) {
+        return;
+    }
+    card_uri = card_uri.substr("loading_".length);
+
+    if (card_uri == this.data.uri)
+    {
+        Session.set('show_card_form', card_uri);
         $("#show-task-view")[0].click();
     }
 }
@@ -130,11 +139,13 @@ function getCard() {
 }
 
 Template.card_view.cardname = function() {
+    console.log("Template.card_view.cardname, " + Session.get('show_card_form'));
     var card = getCard();
+    console.log(card);
     if (!card) {
         return;
     }
-    return card.name;
+    return card.name.trim();
 }
 
 function getListForCard() {
@@ -166,7 +177,14 @@ Template.card_view.rendered = function() {
     });
 }
 
+Template.card_view.edit_cardname = function() {
+    return Template.card_view.can_edit() && Session.equals("show_edit_cardname_form", 'true');
+}
+
 Template.card_view.events({
+    /**
+     * Remove card
+     */
     'click .remove-action': function(event, template) {
         var card = getCard();
         var list = getListForCard();
@@ -182,8 +200,53 @@ Template.card_view.events({
         Session.set('show_card_form', '');
     },
 
-    'click .close' : function() {
+    /**
+     * Show board again
+     */
+    'click .close-task-view' : function() {
         var opts = Session.get('current_view_options');
         Router.navigate('board/' + opts.board_uri);
     },
+
+    /**
+     * Start to edit card name
+     */
+    'click .taskname' : function (event, template) {
+        Session.set('show_edit_cardname_form', 'true');
+        Meteor.setTimeout(function () {
+        $("#task-view-modal textarea").select().focus();
+        }, 300);
+    },
+
+    /**
+     * save card name
+     */
+    'click .save' : function(event) {
+        var card = getCard();
+        var cardname = $("#card_name_edit").val().trim();
+        Cards.update({_id: card._id}, {$set: {name: cardname}});
+        Session.set('show_edit_cardname_form', '');
+        event.preventDefault();
+    },
+
+    /**
+     * On <enter> save card name, on esc stop editting
+     */
+    'keypress #card_name_edit' : function (event, template) {
+        if (event.which == 13) { // <enter>
+            event.preventDefault();
+            template.find('.save').click();
+        } else if (event.which == 27) { // <esc> stops editting
+            event.stopPropagation();
+            template.find('.close-card-edit').click();
+        }
+    },
+
+    /**
+     * Stop editting
+     */
+    'click .close-card-edit' : function(event) {
+        Session.set('show_edit_cardname_form', '');
+        event.preventDefault();
+    }
 });
