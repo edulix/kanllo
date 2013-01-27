@@ -45,10 +45,10 @@ Boards.allow({
   update: function (userId, boards, fields, modifier) {
     return _.all(boards, function (board) {
       if (userId !== board.owner && board.admins.indexOf(userId) == -1) {
-        return false; // not the owner
+        return false; // not the owner or admin
       }
 
-      var allowed = ["name", "description", "lists", ];
+      var allowed = ["name", "description", "lists", "members", "admins"];
       if (_.difference(fields, allowed).length)
         return false; // tried to write to forbidden field
 
@@ -223,6 +223,21 @@ Meteor.methods({
 
         Lists.update({_id: list_id}, {$addToSet: {cards: cardId}});
         return uri;
+    },
+
+    /**
+     * Find users by username
+     */
+    findUsers: function(options) {
+        return Meteor.users.find({'username': {$regex: ".*" + options.q + ".*"}}).map(
+            function(item) {
+                var email = item.email;
+                if (!item.email) {
+                    email = "empty@example.com";
+                }
+                return {username: item.username, email: email, id: item._id};
+            }
+        );
     },
 });
 

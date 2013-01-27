@@ -22,6 +22,8 @@ Session.set("window_resize", new Date());
 // Always be subscribed to the todos for the selected list
 Meteor.subscribe("boards");
 
+Meteor.subscribe("users");
+
 // Suscribe to cards and list if we have a board
 Meteor.autosubscribe(function () {
     if (Session.get('current_view') == "board_view") {

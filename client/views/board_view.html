@@ -1,6 +1,7 @@
 <template name="board_view">
     {{> edit_board_name}}
     {{> board_new_list}}
+    {{> board_add_member}}
     <div class="container-fluid short-padding">
         <header id="header"> </header>
         <section id="content">
@@ -11,7 +12,7 @@
                         <span class="boardname">{{boardname}}</span>
                         {{/isolate}}
                         {{#if can_edit}}
-                        <a href="#" class="edit-board-link" data-target="#edit-board-modal" data-toggle="modal">
+                        <a href="#" class="" data-target="#edit-board-modal" data-toggle="modal">
                             <i class="icon-pencil"></i>
                         </a>
                         {{/if}}
@@ -35,7 +36,7 @@
 
                         {{#if can_edit}}
                         <div class="board-buttons">
-                            <button class="btn" data-target="#member-modal" data-toggle="modal">
+                            <button class="btn add-members-link" data-target="#board-add-member-modal" data-toggle="modal">
                                 <i class="icon-user"></i>
                                 Add Members
                             </button>
@@ -109,37 +110,72 @@
     <div class="member-lists">
         <ul class="inline admin">
             {{#each admins}}
-            <span>
-                <li class="btn-group memberimg">
-                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                        <img title="{{username}}" alt="{{username}}" src="{{gravatar_url 30 _id}}"/>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <img src="{{gravatar_url 30 _id}}"/>Actions for {{username}}
-                        </li>
-                        <li class="divider"></li>
-                    </ul>
-                </li>
+                {{> board_member_item}}
             </span>
             {{/each}}
         </ul>
         <ul class="inline members">
             {{#each members}}
-            <span>
-                <li class="btn-group memberimg">
-                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
-                        <img title="{{username}}" alt="{{username}}" src="{{gravatar_url 30 _id}}"/>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <img src="{{gravatar_url 30 _id}}"/>Actions for {{username}}
-                        </li>
-                        <li class="divider"></li>
-                    </ul>
-                </li>
-            </span>
+                {{> board_member_item}}
             {{/each}}
         </ul>
+    </div>
+</template>
+
+<template name="board_member_item">
+    <span>
+        <li class="btn-group memberimg">
+            <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                <img title="{{username}}" alt="{{username}}" src="{{gravatar_url 30 _id}}"/>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="dLabel" role="menu">
+                <li>
+                    <img src="{{gravatar_url 30 _id}}"/>Actions for {{username}}
+                </li>
+                <li class="divider"></li>
+                {{#if can_remove_membership}}
+                <li>
+                    <a class="remove-membership-action" href="#"><i class="icon-remove"></i>Remove membership</a>
+                </li>
+                {{/if}}
+                {{#if can_remove_from_admin}}
+                <li>
+                    <a class="remover-from-admin-action" href="#"><i class="icon-remove"></i>Remove from admin</a>
+                </li>
+                {{/if}}
+                {{#if can_make_admin}}
+                <li>
+                    <a class="make-admin-action" href="#"><i class="icon-ok"></i>Make admin</a>
+                </li>
+                {{/if}}
+            </ul>
+        </li>
+    </span>
+</template>
+
+<template name="board_add_member">
+    <div id="board-add-member-modal" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" id="add-member-close" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>Add member</h3>
+        </div>
+        <div class="modal-body">
+            <div class="user">
+                <span class="gravatar"></span>
+                <span class="name"></span>
+            </div>
+            <form id="board-form" class="form-horizontal">
+            {{#isolate}}
+            <div class="control-group {{#if modal_form_errors}}error{{/if}}">
+                <label class="control-label" for="listname">Username</label>
+                <div class="controls">
+                    <input type="text" id="sharedname" name="username" placeholder="username" autocomplete="off"/>
+                    <a class="btn btn-info save" href="#">Add member</a>
+                    <span class="help-inline">{{modal_form_errors}}</span>
+                </div>
+            </div>
+            {{/isolate}}
+            </form>
+        </div>
     </div>
 </template>

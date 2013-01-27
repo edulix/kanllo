@@ -1,3 +1,11 @@
+.admin .dropdown-toggle img {
+    border-top: 2px solid red !important;
+}
+
+.members .dropdown-toggle img {
+    border-top: 2px solid green !important;
+}
+
 .short-padding {
     padding-right: 0;
 }

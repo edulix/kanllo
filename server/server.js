@@ -20,6 +20,11 @@ Meteor.publish('cards', function (board_uri) {
     return Cards.find({board_uri: board_uri});
 });
 
+Meteor.publish('users', function () {
+    return Meteor.users.find();
+});
+
+
 // Accounts configuration
 
 Accounts.emailTemplates.siteName = "Kanllo";
