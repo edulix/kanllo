@@ -36,6 +36,73 @@ Template.board_view_list.events({
     }
 });
 
+// drag & drop
+
+function makeListDraggable(el) {
+    $(el).draggable({
+        //containment: ".board",
+        handle: ".header",
+        cursor: "move",
+        start: dragListStart,
+        stop: dragListStop,
+        helper: dragListHelper
+    });
+}
+
+function makeListDroppable(el) {
+    $(el).droppable({
+        over: function(e, ui) {
+            var o1 = ui.draggable;
+            if (o1.hasClass("task")) {
+                $(this).find(".cards").prepend(o1);
+            } else {
+                var o2 = $(this);
+                if (o2.offset().left < o1.offset().left) {
+                    o1.insertBefore(o2);
+                } else {
+                    o1.insertAfter(o2);
+                }
+            }
+        },
+        tolerance: "pointer"
+    });
+
+    $(el).find(".header").droppable({
+        over: function(e, ui) {
+            var o1 = ui.draggable;
+            if (o1.hasClass("task")) {
+                $(this).parent().find(".cards").prepend(o1);
+            }
+        }
+    });
+}
+
+function dragListHelper(e) {
+    var helper = $(this).clone();
+    helper.addClass("dragging");
+    helper.width($(this).width());
+    return helper;
+}
+
+function dragListStart(e, ui) {
+    $(this).addClass("dragging-freeze");
+}
+
+function dragListStop(e, ui) {
+    $(this).removeClass("dragging-freeze");
+    // save list order
+    var listing = $(".list:not(.dragging)").map(function(i, l) {
+        return l.id.substr("board_list_".length);
+    });
+    var opts = Session.get('current_view_options');
+    Boards.update({uri: opts.board_uri}, {$set: {lists: listing.toArray()}});
+}
+
+Template.board_view_list.rendered = function () {
+    makeListDraggable(this.firstNode);
+    makeListDroppable(this.firstNode);
+}
+
 //### board_new_list
 
 Template.board_new_list.events({
