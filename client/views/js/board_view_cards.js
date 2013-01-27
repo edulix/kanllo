@@ -101,7 +101,11 @@ function dropTaskOver(e, ui) {
 }
 
 Template.board_card_item.rendered = function () {
-    makeTaskDraggable(this.firstNode);
+    var opts = Session.get('current_view_options');
+    var board = Boards.findOne({uri: opts.board_uri, members: Meteor.userId()});
+    if(board) { // if can edit
+        makeTaskDraggable(this.firstNode);
+    }
 
     // All the following code logic launches show card dialog when user enters
     // directly to a card url

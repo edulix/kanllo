@@ -99,8 +99,10 @@ function dragListStop(e, ui) {
 }
 
 Template.board_view_list.rendered = function () {
-    makeListDraggable(this.firstNode);
-    makeListDroppable(this.firstNode);
+    if (Template.board_view_list.can_edit()) {
+        makeListDraggable(this.firstNode);
+        makeListDroppable(this.firstNode);
+    }
 }
 
 //### board_new_list
