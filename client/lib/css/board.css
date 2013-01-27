@@ -1,10 +1,5 @@
 .short-padding {
-    padding-left: 10px;
     padding-right: 0;
-}
-
-.row-fluid > .span2.right-menu {
-    padding-right: 10px;
 }
 
 .right-menu > div.activity {
@@ -92,11 +87,24 @@
         float: left;
         width: 210px;
     }
+    .short-padding {
+        padding-left: 10px;
+    }
+
+    .row-fluid > .span2.right-menu {
+        padding-right: 10px;
+    }
 }
 
 @media (max-width: 480px) {
     .board {
         height: auto !important;
+        padding: 0;
+    }
+
+    body {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 }
 

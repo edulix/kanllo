@@ -67,6 +67,7 @@ Template.board_window_resize.window_resize = function() {
 
     if ($(window).width() <= 480) {
         $("#list-list").css("width", "auto");
+        $(".activity").css("height", "auto");
     } else {
         $(".right-menu").css("height", $(".board").height());
         var width = board.lists.length * 223;
