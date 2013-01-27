@@ -186,7 +186,7 @@ Meteor.methods({
 
         Cards.remove({board_uri: board.uri, _id: {$in: list.cards}});
         Lists.remove({_id: list._id});
-        Boards.update({uri: board.uri}, {$pull: {$set: {lists: options.list_id}}});
+        Boards.update({uri: board.uri}, {$pull: {lists: options.list_id}});
     },
 
     /**

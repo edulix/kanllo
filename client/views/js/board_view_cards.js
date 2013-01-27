@@ -31,3 +31,75 @@ Template.new_card_form.events({
         }
     },
 });
+
+//### board_card_item
+
+// drag & drop
+
+function makeTaskDraggable(el) {
+    $(el).draggable({
+        containment: ".board",
+        cursor: "move",
+        start: dragTaskStart,
+        stop: dragTaskStop,
+        helper: dragTaskHelper
+    });
+
+    $(el).droppable({
+        over: dropTaskOver,
+    });
+}
+
+// task drag functions
+function dragTaskHelper(e) {
+    var helper = $(this).clone();
+    helper.addClass("dragging");
+    helper.width($(this).width());
+    return helper;
+}
+
+function dragTaskStart(e, ui) {
+    $(this).addClass("dragging-freeze");
+}
+
+function dragTaskStop(e, ui) {
+    $(this).removeClass("dragging-freeze");
+
+    var card_id = this.id.substr("board_card_".length);
+
+    // Change model order attr and update
+    var list = $(this).parent().parent().parent();
+    var cards = list.find(".task:not(.dragging)").map(function(i, card) {
+        return card.id.substr("board_card_".length);
+    });
+
+    var list_id = list[0].id.substr("board_list_".length);
+    var opts = Session.get('current_view_options');
+
+    // Find previous list in which the card was in
+    var old_list = Lists.findOne({board_uri: opts.board_uri, cards: card_id});
+
+    // Update the card listing
+    Lists.update({_id: list_id}, {$set: {cards: cards.toArray()}});
+
+    // Remove the card from previous list if appropiate
+    if (old_list._id != list_id) {
+        Lists.update({_id: old_list._id}, {$pull: {cards: card_id}});
+    }
+}
+
+function dropTaskOver(e, ui) {
+    var o1 = ui.draggable;
+    var o2 = $(this);
+    if (o1.hasClass("task")) {
+        if (o1.attr("id") == o1.parent().children().last().attr("id")) {
+            o1.insertAfter(o2);
+        } else {
+            o1.insertBefore(o2);
+        }
+    }
+}
+
+Template.board_card_item.rendered = function () {
+    makeTaskDraggable(this.firstNode);
+}
