@@ -1,0 +1,54 @@
+<template name="board_card_item">
+    <div id="board_card_{{_id}}" class="task ui-draggable ui-droppable">
+        <span class="description">{{name}}</span>
+        <ul class="pull-right inline onetaskmembers">
+        </ul>
+        <div class="clear"></div>
+    </div>
+</template>
+
+<template name="card_view">
+    <a id="show-task-view" href="#" data-target="#task-view-modal" data-toggle="modal"></a>
+    <div id="task-view-modal" class="modal hide fade">
+        <div class="modal-body">
+            {{#isolate}}
+            <button type="button" class="close close-task-view" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="header"><span class="taskname">{{cardname}}</span><span class="muted">in list <span class="listname text-info">{{listname}}</span></span></h4>
+            <div class="row-fluid">
+                <div class="span8 main">
+                    <!--<form class="name-form" class="form" data-url="">
+                        <div class="description">
+                            <textarea name="description"></textarea>
+                        </div>
+                        <input class="btn btn-info" type="submit" value="Save"/>
+                        <a href="#" class="close">&times;</a>
+                    </form>-->
+                </div>
+                <div class="span4 menu">
+                    <h4>Actions</h4>
+                    {{#if can_edit}}
+                    <a href="#" class="btn remove-action"><i class="icon-trash"></i> Archive card</a>
+                    {{else}}
+                    None
+                    {{/if}}
+                    <h4>Members</h4>
+                    <div class="action-member-lists">
+                        {{#each card_members}}
+                        <ul class="inline taskmembers"> </ul>
+                        {{else}}
+                        None
+                        {{/each}}
+                    </div>
+                    {{#if can_edit}}
+                    <div class="btn-group memberimg">
+                        <a href="#" class="dropdown-toggle btn assign-action" data-toggle="dropdown"><i class="icon-user"></i> Add member..</a>
+                        <ul class="dropdown-menu allmembers">
+                        </ul>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+            {{/isolate}}
+        </div>
+    </div>
+</template>

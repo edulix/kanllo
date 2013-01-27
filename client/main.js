@@ -13,6 +13,8 @@ Session.set('modal_form_errors', '');
 Session.set('show_new_card_form', '');
 Session.set('show_edit_list_name', '');
 
+Session.set('show_card_form', '');
+
 /**
  * Sesion var used to be able to get a new event call in a template everytime
  * the window is resized

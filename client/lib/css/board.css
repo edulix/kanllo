@@ -197,3 +197,6 @@
     overflow-y: hidden;
 }
 
+.modal .btn, .modal .btn-group {
+    width: 150px;
+}

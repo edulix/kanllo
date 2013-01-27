@@ -103,3 +103,63 @@ function dropTaskOver(e, ui) {
 Template.board_card_item.rendered = function () {
     makeTaskDraggable(this.firstNode);
 }
+
+Template.board_card_item.events({
+    'click .task': function(event, template) {
+        Session.set('show_card_form', this._id);
+        $('#show-task-view')[0].click();
+    },
+});
+
+//### card_view
+
+function getCard() {
+    var card_id = Session.get('show_card_form');
+    return Cards.findOne({_id: card_id});
+}
+
+Template.card_view.cardname = function() {
+    var card = getCard();
+    if (!card) {
+        return;
+    }
+    return card.name;
+}
+
+function getListForCard() {
+    var card = getCard();
+    if (!card) {
+        return;
+    }
+    return Lists.findOne({cards: card._id});
+}
+
+Template.card_view.listname = function() {
+    var list = getListForCard();
+    if (!list) {
+        return;
+    }
+    return list.name;
+}
+
+Template.card_view.can_edit = function() {
+    var opts = Session.get('current_view_options');
+    return Boards.findOne({uri: opts.board_uri, members: Meteor.userId()});
+}
+
+Template.card_view.events({
+    'click .remove-action': function(event, template) {
+        var card_id = Session.get('show_card_form');
+        var list = getListForCard();
+        if (!list) {
+            $('.close-task-view')[0].click();
+            return;
+        }
+
+        Lists.update({_id: list._id}, {$pull: {cards: card_id}});
+        Cards.remove({_id: card_id});
+
+        $('.close-task-view')[0].click();
+        Session.set('show_card_form', '');
+    },
+});
