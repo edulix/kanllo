@@ -233,7 +233,7 @@ Meteor.methods({
             function(item) {
                 var email = item.email;
                 if (!item.email) {
-                    email = "empty@example.com";
+                    email = "nobody@example.com";
                 }
                 return {username: item.username, email: email, id: item._id};
             }

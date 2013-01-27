@@ -9,19 +9,19 @@ Handlebars.registerHelper('equal', function(a, b) {
 Handlebars.registerHelper('my_gravatar_url', function(size) {
     var email = userEmail(Meteor.user());
     if(email) {
-        var ret = $.gravatar_url(email, {'size': size});
-        return ret;
+        return $.gravatar_url(email, {'size': size});
     }
-    return "";
+
+    return $.gravatar_url("nobody@example.com", {'size': size});
 });
 
 Handlebars.registerHelper('gravatar_url', function(size, user_id) {
     var email = userEmail(Meteor.users.findOne({_id: user_id}));
     if(email) {
-        var ret = $.gravatar_url(email, {'size': size});
-        return ret;
+        return $.gravatar_url(email, {'size': size});
     }
-    return "";
+
+    return $.gravatar_url("nobody@example.com", {'size': size});
 });
 
 Handlebars.registerHelper('my_username', function(size) {
