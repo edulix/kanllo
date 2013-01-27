@@ -48,7 +48,7 @@ Boards.allow({
         return false; // not the owner
       }
 
-      var allowed = ["name", "description", "lists_id", ];
+      var allowed = ["name", "description", "lists", ];
       if (_.difference(fields, allowed).length)
         return false; // tried to write to forbidden field
 
@@ -186,6 +186,7 @@ Meteor.methods({
 
         Cards.remove({board_uri: board.uri, _id: {$in: list.cards}});
         Lists.remove({_id: list._id});
+        Boards.update({uri: board.uri}, {$pull: {$set: {lists: options.list_id}}});
     },
 
     /**
