@@ -39,31 +39,33 @@ Boards = new Meteor.Collection("boards");
 
 
 Boards.allow({
-  insert: function (userId, board) {
-    return false; // no cowboy inserts -- use createBoard method
-  },
-  update: function (userId, boards, fields, modifier) {
-    return _.all(boards, function (board) {
-      if (userId !== board.owner && board.admins.indexOf(userId) == -1) {
-        return false; // not the owner or admin
-      }
+    insert: function (userId, board) {
+        return false; // no cowboy inserts -- use createBoard method
+    },
+    update: function (userId, boards, fields, modifier) {
+        return _.all(boards, function (board) {
+            if (userId !== board.owner && board.admins.indexOf(userId) == -1) {
+                return false; // not the owner or admin
+            }
 
-      var allowed = ["name", "description", "lists", "members", "admins"];
-      if (_.difference(fields, allowed).length)
-        return false; // tried to write to forbidden field
+            var allowed = ["name", "description", "lists", "members", "admins"];
+            if (_.difference(fields, allowed).length) {
+                console.log("forbidden field");
+                return false; // tried to write to forbidden field
+            }
 
-      // TODO: A good improvement would be to validate the type of the new
-      // value of the field (and if a string, the length.) In the
-      // future Meteor will have a schema system to makes that easier.
-      return true;
-    });
-  },
-  remove: function (userId, boards) {
-    return ! _.any(boards, function (board) {
-      // deny if not the owner
-      return board.owner !== userId;
-    });
-  }
+            // TODO: A good improvement would be to validate the type of the new
+            // value of the field (and if a string, the length.) In the
+            // future Meteor will have a schema system to makes that easier.
+            return true;
+        });
+    },
+    remove: function (userId, boards) {
+        return ! _.any(boards, function (board) {
+        // deny if not the owner
+        return board.owner !== userId;
+        });
+    }
 });
 
 

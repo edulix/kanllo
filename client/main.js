@@ -64,6 +64,7 @@ var AppRouter = Backbone.Router.extend({
     board: function (board_uri) {
         Session.set("current_view_options", {board_uri: board_uri});
         Session.set("current_view", "board_view");
+        Session.get("show_edit_boardname_form", "");
     },
 
     card: function (board_uri, card_uri) {

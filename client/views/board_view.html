@@ -1,5 +1,4 @@
 <template name="board_view">
-    {{> edit_board_name}}
     {{> board_new_list}}
     {{> board_add_member}}
     {{> card_view}}
@@ -10,13 +9,16 @@
                 <div class="span12 board-header">
                     <h4>
                         {{#isolate}}
+                        {{#if edit_boardname}}
+                            <form class="form-horizontal span3" id="board-name-form">
+                                <input class="input-small boardname" type="text" value="{{boardname}}" name="name">
+                                <input class="btn btn-info save" type="submit" value="Save">
+                                <a class="close close-board-name-form" href="#">×</a>
+                            </form>
+                        {{else}}
                         <span class="boardname">{{boardname}}</span>
-                        {{/isolate}}
-                        {{#if can_edit}}
-                        <a href="#" class="" data-target="#edit-board-modal" data-toggle="modal">
-                            <i class="icon-pencil"></i>
-                        </a>
                         {{/if}}
+                        {{/isolate}}
                     </h4>
                 </div>
             </div>
@@ -79,32 +81,6 @@
 
 <template name="board_window_resize">
 {{window_resize}}
-</template>
-
-<template name="edit_board_name">
-    <div id="edit-board-modal" class="modal hide fade">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3><span class="boardname">{{boardname}}</span></h3>
-        </div>
-        <div class="modal-body">
-            <form id="board-form" class="form-horizontal">
-            {{#isolate}}
-            <div class="control-group {{#if modal_form_errors}}error{{/if}}">
-                <label class="control-label" for="boardname">Board name</label>
-                <div class="controls">
-                    <input type="text" id="boardname" name="name" placeholder="board name" value="{{boardname}}"/>
-                    <a class="btn btn-success save" href="#">Update</a>
-                    <span class="help-inline">{{modal_form_errors}}</span>
-                </div>
-            </div>
-            {{/isolate}}
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button id="edit-board-close" class="btn" data-dismiss="modal">Close</button>
-        </div>
-    </div>
 </template>
 
 <template name="board_members_list">

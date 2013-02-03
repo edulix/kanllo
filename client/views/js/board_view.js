@@ -20,6 +20,15 @@ Template.board_view.can_edit = function() {
     return board;
 }
 
+
+Template.board_view.edit_boardname = function() {
+    if (!Template.board_view.can_edit()) {
+        return false;
+    }
+    var opts = Session.get('current_view_options');
+    return Session.equals('show_edit_boardname_form', opts.board_uri);
+}
+
 Template.board_view.can_admin = function() {
     var opts = Session.get('current_view_options');
     var board = Boards.findOne({uri: opts.board_uri, admins: Meteor.userId()});
@@ -28,12 +37,50 @@ Template.board_view.can_admin = function() {
 
 Template.board_view.events({
     /**
-     * Focus edit board input when modal dialog shown
+     * show board edit form when user clicks the board name
      */
-    'click .edit-board-link' : function (event, template) {
+    'click span.boardname' : function (event, template) {
+        var opts = Session.get('current_view_options');
+        Session.set('show_edit_boardname_form', opts.board_uri);
         Meteor.setTimeout(function () {
-        $("#edit-board-modal input").select().focus();
+        $(".boardname").select().focus();
         }, 300);
+    },
+
+
+    /**
+     * When user click to update board name, send the petition to the server,
+     * create the board, and show it
+     */
+    'click #board-name-form .save' : function (event, template) {
+        var name = template.find(".boardname").value;
+        if (name.length > 5 && name.length < 140) {
+            var opts = Session.get('current_view_options');
+            Boards.update({uri: opts.board_uri}, {$set: {'name': name}});
+
+            // hide it
+            Session.set('show_edit_boardname_form', '');
+        }
+        event.preventDefault();
+    },
+
+    /**
+     * Capture board name input keyboard events
+     */
+    'keypress #board-name-form input' : function (event, template) {
+        if (event.which == 13) { // On <Enter> save
+            event.preventDefault();
+            template.find('#board-name-form .save').click();
+        } else if (event.which == 0) { // On <Esc> exit
+            Session.set('show_edit_boardname_form', '');
+        }
+    },
+
+    /**
+     * Closes the form
+     */
+    'click .close-board-name-form' : function (event, template) {
+        Session.set('show_edit_boardname_form', '');
     },
 
     /**
@@ -127,45 +174,6 @@ Template.board_members_list.members = function() {
     var users = Meteor.users.find({_id: {$in: board.members, $not: {$in: board.admins}}});
     return users;
 }
-
-
-//### edit_board_name
-
-Template.edit_board_name.events({
-    /**
-     * When user click to update board name, send the petition to the server,
-     * create the board, and show it
-     */
-    'click .save' : function (event, template) {
-        var name = template.find("#boardname").value;
-        if (name.length > 5 && name.length < 140) {
-            Session.set("modal_form_errors", "");
-
-
-            var opts = Session.get('current_view_options');
-            var board = Boards.findOne({uri: opts.board_uri});
-            Boards.update({uri: opts.board_uri}, {$set: {'name': name}});
-
-            // hide it
-            $("#edit-board-close").click();
-        } else {
-            Session.set("modal_form_errors", "Name needs to be 5-140 characters long");
-        }
-    },
-
-    /**
-     * On <Enter>, save the board
-     */
-    'keypress #boardname' : function (event, template) {
-        if (event.which == 13) {
-            event.preventDefault();
-            template.find('.save').click();
-        }
-    }
-});
-
-Template.edit_board_name.boardname = Template.board_view.boardname;
-
 
 //### board_add_member
 

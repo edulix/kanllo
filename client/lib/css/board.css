@@ -2,6 +2,10 @@
     border-top: 2px solid red !important;
 }
 
+input.boardname {
+    width: 220px;
+}
+
 .members .dropdown-toggle img {
     border-top: 2px solid green !important;
 }
