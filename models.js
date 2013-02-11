@@ -394,6 +394,35 @@ Cards.allow({
     }
 });
 
+/**
+ * Dedications
+ * 
+ * Format:
+ * {
+ *     created_at: Number,
+ *     creator: String,
+ *     starts_at: Number,
+ *     duration: Number,     // in seconds. if -1, means it's running (should only be one per user)
+ *     card_uri: String,
+ *     board_uri: String,
+ * }
+ */
+
+Dedications = new Meteor.Collection("dedications");
+
+Dedications.allow({
+    insert: function (userId, dedication) {
+        /* use createDedication instead */
+        return true;
+    },
+    update: function (userId, dedications, fields, modifier) {
+        return true;
+    },
+    remove: function (userId, dedications) {
+        return true;
+    },
+});
+
 
 /// User email
 var userEmail = function (user)

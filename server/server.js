@@ -24,6 +24,10 @@ Meteor.publish('users', function () {
     return Meteor.users.find();
 });
 
+Meteor.publish('dedications', function (board_uri) {
+    return Dedications.find({board_uri: board_uri, creator: this.userId});
+});
+
 
 // Accounts configuration
 

@@ -1,0 +1,27 @@
+<template name="board_view_timeline">
+    <div id="timeline" class="row-fluid">
+        <div id="timeline-wrapper" class="span9">
+            {{>board_view_timeline_svg}}
+        </div>
+        <div class="span3 timeline-clock">
+            {{#isolate}}
+            {{#if clock_running}}
+            <div class="btn btn-danger"><i class="icon-stop icon-white" /> Stop</div>
+            <em><strong>Started <a href="#">{{task_name}}</a></strong> a few seconds ago</em>
+            {{/if}}
+            {{/isolate}}
+        </div>
+    </div>
+</template>
+
+
+<template name="board_view_timeline_svg">
+{{#constant}}
+<svg width="1000" height="100%" id="svgtimeline">
+    <g class="axis">
+    </g>
+    <g class="dedications">
+    </g>
+</svg>
+{{/constant}}
+</template>

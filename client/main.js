@@ -34,6 +34,7 @@ Meteor.autosubscribe(function () {
         if (board) {
             Meteor.subscribe("lists", board_uri);
             Meteor.subscribe("cards", board_uri);
+            Meteor.subscribe("dedications", board_uri);
         }
     }
 });

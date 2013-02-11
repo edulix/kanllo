@@ -19,6 +19,10 @@
                         <span class="boardname">{{boardname}}</span>
                         {{/if}}
                         {{/isolate}}
+
+                        {{#if show_timeline}}
+                        {{>board_view_timeline}}
+                        {{/if}}
                     </h4>
                 </div>
             </div>

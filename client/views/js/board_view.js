@@ -20,6 +20,10 @@ Template.board_view.can_edit = function() {
     return board;
 }
 
+Template.board_view.show_timeline = function() {
+    var opts = Session.get('current_view_options');
+    return !Session.equals('show_edit_boardname_form', opts.board_uri);
+}
 
 Template.board_view.edit_boardname = function() {
     if (!Template.board_view.can_edit()) {
@@ -120,7 +124,6 @@ Template.board_window_resize.window_resize = function() {
         }, 1000);
         return;
     }
-    console.log("rendered");
 
     var size = ($(window).height() - $(".board").offset().top - 30);
     $(".board").css("height",  size + "px");
@@ -131,6 +134,10 @@ Template.board_window_resize.window_resize = function() {
         $("#list-list").css("width", "auto");
         $(".activity").css("height", "auto");
     } else {
+        // timeline
+        $("#timeline").width($("span.boardname").parent().width() - $("span.boardname").width());
+
+        // lists
         $(".right-menu").css("height", $(".board").height());
         var width = board.lists.length * 223;
         $("#list-list").css("width", width + "px");
