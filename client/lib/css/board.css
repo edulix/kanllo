@@ -35,6 +35,14 @@ svg .axis text {
     font-weight: normal;
 }
 
+svg .axis g.format2 line.tick, svg .axis g.format3 line.tick {
+    stroke: #0088aa;
+}
+
+svg .axis g.format2 text, svg .axis g.format3 text {
+    fill: #0088aa;
+}
+
 svg .dedications rect {
     fill: #93aca7;
 }

@@ -9,6 +9,26 @@ Template.board_view_timeline_svg.rendered = function() {
     self.axis = self.find('#svgtimeline g.axis');
     self.dedications = self.find('#svgtimeline g.dedications');
 
+    function timeFormat(formats) {
+        return function(date) {
+            var i = formats.length - 1, f = formats[i];
+            while (!f[1](date)) f = formats[--i];
+            d3.select(this.parentNode).classed("format" + i, true);
+            return f[0](date);
+        };
+    }
+
+    var customTimeFormat = timeFormat([
+        [d3.time.format("%Y"), function() { return true; }],
+        [d3.time.format("%B"), function(d) { return d.getMonth(); }],
+        [d3.time.format("%b %d"), function(d) { return d.getDate() != 1; }],
+        [d3.time.format("%a %d"), function(d) { return d.getDay() && d.getDate() != 1; }],
+        [d3.time.format("%I %p"), function(d) { return d.getHours(); }],
+        [d3.time.format("%I:%M"), function(d) { return d.getMinutes(); }],
+        [d3.time.format(":%S"), function(d) { return d.getSeconds(); }],
+        [d3.time.format(".%L"), function(d) { return d.getMilliseconds(); }]
+    ]);
+
     // Sets the xScale, which should change depending on window size, and also
     // resizes properly the timeline
     var setXScale = function() {
@@ -25,7 +45,8 @@ Template.board_view_timeline_svg.rendered = function() {
             .scale(self.xScale)
             .orient("bottom")
             .ticks(d3.time.hours, 3)
-            .tickSize(30, 30);
+            .tickSize(30, 30)
+            .tickFormat(customTimeFormat);
 
         var xTicks = d3.select(self.axis).call(xAxis);
         xTicks.selectAll("text")
