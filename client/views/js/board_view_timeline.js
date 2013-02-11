@@ -95,17 +95,17 @@ Template.board_view_timeline_svg.rendered = function() {
         setXScale();
         drawTicks();
         drawAllDedications();
-        Meteor.setTimeout( function() {
-        $(self.svg).parent().scrollLeft($(self.svg).width());
-        }, 500);
+        Meteor.setTimeout(function() {
+            $(self.svg).parent().scrollLeft($(self.svg).width());
+        }, 300);
     }
 
     updateAll();
 
     // Redraw the timeline AFTER window has been resized, otherwise it might kill my computer.
     $(window).on('resize', function() {
-      clearTimeout(this.id);
-      this.id = setTimeout(updateAll, 300);
+        clearTimeout(this.id);
+        this.id = setTimeout(updateAll, 300);
     });
 
     // Redraw the timeline every minute, because time goes on and it needs to be
@@ -115,14 +115,14 @@ Template.board_view_timeline_svg.rendered = function() {
     self.redrawOnNewData = Meteor.autorun(function() {
         var dedications = Dedications.find().fetch(); 
 
-        self.dedicationRects = d3.select(self.dedications)
-            .selectAll("rect")
-            .data(dedications, function (d) { return d._id; }); 
+        clearTimeout(this.id);
+        this.id = setTimeout(function() {
+            self.dedicationRects = d3.select(self.dedications)
+                .selectAll("rect")
+                .data(dedications, function (d) { return d._id; }); 
 
-        console.log("redrawOnNewData");
-
-        // TODO: do this with a timeout of 1s, one time per second at most
-        drawAllDedications();
+            drawAllDedications();
+        }, 300);
     });
 }
 
