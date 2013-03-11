@@ -128,6 +128,10 @@ Template.board_card_item.card_link = function () {
     return "/board/" + opts.board_uri + "/card/" + this.uri;
 }
 
+Template.board_card_item.card_members = function () {
+    return Meteor.users.find({_id: {$in: this.members}});
+}
+
 Template.board_card_item.events({
     'click .task': function(event, template) {
         Session.set('show_card_form', this.uri);
@@ -143,13 +147,30 @@ function getCard() {
 }
 
 Template.card_view.cardname = function() {
-    console.log("Template.card_view.cardname, " + Session.get('show_card_form'));
     var card = getCard();
-    console.log(card);
     if (!card) {
         return;
     }
     return card.name.trim();
+}
+
+Template.card_view.card_members = function() {
+    var card = getCard();
+    if (!card) {
+        return;
+    }
+    return Meteor.users.find({_id: {$in: card.members}});
+}
+
+Template.card_view.assign_members = function() {
+    var card = getCard();
+    var opts = Session.get('current_view_options');
+    if (!card) {
+        return;
+    }
+    var board = Boards.findOne({uri: opts.board_uri, members: Meteor.userId()});
+    var non_card_members = _.difference(board.members, card.members);
+    return Meteor.users.find({_id: {$in: non_card_members}});
 }
 
 function getListForCard() {
@@ -251,6 +272,40 @@ Template.card_view.events({
      */
     'click .close-card-edit' : function(event) {
         Session.set('show_edit_cardname_form', '');
+        event.preventDefault();
+    }
+});
+
+
+//### add_member_to_card
+
+Template.add_member_to_card.events({
+    /**
+     * Assign card
+     */
+    'click a' : function (event, template) {
+        var card = getCard();
+        Cards.update({_id: card._id}, {$addToSet: {members: this._id}});
+        event.preventDefault();
+    }
+});
+
+
+//### card_member_item
+
+Template.card_member_item.can_edit = function ()  {
+    var opts = Session.get('current_view_options');
+    return Boards.findOne({uri: opts.board_uri, members: Meteor.userId()});
+}
+
+
+Template.card_member_item.events({
+    /**
+     * Unassign card
+     */
+    'click a.remove-card-membership-action' : function (event, template) {
+        var card = getCard();
+        Cards.update({_id: card._id}, {$pull: {members: this._id}});
         event.preventDefault();
     }
 });

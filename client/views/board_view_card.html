@@ -2,9 +2,16 @@
     <div id="board_card_{{_id}}" href="{{card_link}}" class="task internal-link ui-draggable ui-droppable">
         <span class="description">{{name}}</span>
         <ul class="pull-right inline onetaskmembers">
+            {{#each card_members}}
+                {{> board_card_member_item}}
+            {{/each}}
         </ul>
         <div class="clear"></div>
     </div>
+</template>
+
+<template name="board_card_member_item">
+    <img title="{{username}}" alt="{{username}}" src="{{gravatar_url 30 _id}}"/>
 </template>
 
 <template name="card_view">
@@ -37,16 +44,21 @@
                     {{/if}}
                     <h4>Members</h4>
                     <div class="action-member-lists">
-                        {{#each card_members}}
-                        <ul class="inline taskmembers"> </ul>
-                        {{else}}
-                        None
-                        {{/each}}
+                        <ul class="inline taskmembers">
+                            {{#each card_members}}
+                                {{> card_member_item}}
+                            {{else}}
+                            None
+                            {{/each}}
+                        </ul>
                     </div>
                     {{#if can_edit}}
                     <div class="btn-group memberimg">
                         <a href="#" class="dropdown-toggle btn assign-action" data-toggle="dropdown"><i class="icon-user"></i> Add member..</a>
                         <ul class="dropdown-menu allmembers">
+                            {{#each assign_members}}
+                                {{> add_member_to_card}}
+                            {{/each}}
                         </ul>
                     </div>
                     {{/if}}
@@ -55,4 +67,28 @@
             {{/isolate}}
         </div>
     </div>
+</template>
+
+
+<template name="card_member_item">
+    <li class="btn-group memberimg miniuser">
+        <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+            <img title="{{username}}" alt="{{username}}" src="{{gravatar_url 30 _id}}"/>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dLabel" role="menu">
+            <li>
+                <img src="{{gravatar_url 30 _id}}"/> Actions for {{username}}
+            </li>
+            <li class="divider"></li>
+            {{#if can_edit}}
+            <li>
+                <a class="remove-card-membership-action" href="#"><i class="icon-remove"></i>Unassign from card</a>
+            </li>
+            {{/if}}
+        </ul>
+    </li>
+</template>
+
+<template name="add_member_to_card">
+    <li><a href="#"><img src="{{gravatar_url 30 _id}}"/> {{username}}</a></li>
 </template>

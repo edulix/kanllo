@@ -14,7 +14,13 @@ Template.board_view_timeline_svg.rendered = function() {
             var i = formats.length - 1, f = formats[i];
             while (!f[1](date)) f = formats[--i];
             d3.select(this.parentNode).classed("format" + i, true);
-            return f[0](date);
+
+            var ret = f[0](date);
+
+            if (i == 4 && date.getHours() == 12) {
+                d3.select(this.parentNode).classed("midday", true);
+            }
+            return ret;
         };
     }
 
@@ -54,12 +60,23 @@ Template.board_view_timeline_svg.rendered = function() {
     }
 
     // Draws a single dedication rect
-    var drawDedication = function(dedicationRect) {
-        dedicationRect
-            .attr('data-id', function (dedication) { return dedication._id; })
+    var drawDedication = function(dedications) {
+        dedications
             .attr('class', 'dedication')
-            .attr('x', function (dedication) { return self.xScale(dedication.starts_at); })
-            .attr('y', '15')
+            .attr('data-id', function (dedication) { return dedication._id; })
+            .attr('transform', function (dedication) {
+                return 'translate(' + self.xScale(dedication.starts_at) + ', 15)';
+            });
+
+        // create clippath
+        dedications
+            .append('clipPath')
+            .attr('id', function (dedication) { return "dedication_clip_" + dedication._id; })
+            .append('rect')
+            .attr('x', '0')
+            .attr('y', '0')
+            .attr('ry', '2')
+            .attr('ry', '2')
             .attr('width', function (dedication) { 
                 if (dedication.duration == -1) {
                     return self.xScale(new Date().getTime()) - self.xScale(dedication.starts_at);
@@ -68,6 +85,40 @@ Template.board_view_timeline_svg.rendered = function() {
                 }
             })
             .attr('height', '15');
+
+        // create rectangle
+        dedications
+            .append('rect')
+            .attr('x', '0')
+            .attr('y', '0')
+            .attr('ry', '2')
+            .attr('ry', '2')
+            .attr('width', function (dedication) { 
+                if (dedication.duration == -1) {
+                    return self.xScale(new Date().getTime()) - self.xScale(dedication.starts_at);
+                } else {
+                    return self.xScale(dedication.starts_at + dedication.duration*1000) - self.xScale(dedication.starts_at);
+                }
+            })
+            .attr('height', '15');
+
+        // create text
+        dedications
+            .append('text')
+            .attr('class', 'dedication')
+            .attr('clip-path', function (dedication) {  return 'url(#dedication_lip_' + dedication._id; })
+            .attr('x', '4')
+            .attr('y', '11')
+            .attr('width', function (dedication) { 
+                if (dedication.duration == -1) {
+                    return self.xScale(new Date().getTime()) - self.xScale(dedication.starts_at);
+                } else {
+                    return self.xScale(dedication.starts_at + dedication.duration*1000) - self.xScale(dedication.starts_at);
+                }
+            })
+            .text(function (dedication) {
+                return Cards.findOne({uri: dedication.card_uri}).name;
+            });
     }
 
     // draws all dedications
@@ -77,16 +128,11 @@ Template.board_view_timeline_svg.rendered = function() {
         }
 
         // Append new dedications
-        drawDedication(self.dedicationRects.enter().append('rect'));
-
-        // Update changed dedications
-        drawDedication(self.dedicationRects.transition().duration(400));
+        var dedication_groups = self.dedicationRects.enter().append('g').call(drawDedication);
 
         // Remove dedications
         self.dedicationRects
             .exit()
-            .transition()
-            .duration(400)
             .style('opacity', 0)
             .remove(); 
     }
@@ -113,12 +159,12 @@ Template.board_view_timeline_svg.rendered = function() {
     Meteor.setInterval(updateAll, 1000*60);
 
     self.redrawOnNewData = Meteor.autorun(function() {
-        var dedications = Dedications.find().fetch(); 
+        var dedications = Dedications.find().fetch();
 
         clearTimeout(this.id);
         this.id = setTimeout(function() {
             self.dedicationRects = d3.select(self.dedications)
-                .selectAll("rect")
+                .selectAll("g")
                 .data(dedications, function (d) { return d._id; }); 
 
             drawAllDedications();

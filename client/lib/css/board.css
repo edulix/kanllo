@@ -39,12 +39,30 @@ svg .axis g.format2 line.tick, svg .axis g.format3 line.tick {
     stroke: #0088aa;
 }
 
+svg .axis g.midday line.tick {
+    stroke-width: 3px;
+}
+
+
 svg .axis g.format2 text, svg .axis g.format3 text {
     fill: #0088aa;
 }
 
 svg .dedications rect {
     fill: #93aca7;
+    }
+
+svg .dedications g.dedication:hover rect {
+    fill: #4c635c;
+}
+
+
+svg .dedications text {
+    fill: #fff;
+    font-family: sans-serif;
+    font-size: 9px;
+    font-weight: normal;
+    overflow-y: hidden;
 }
 
 /* END timeline */
@@ -223,6 +241,10 @@ input.boardname {
     padding: 4px 3px 1px;
 }
 
+ul.taskmembers {
+    margin: 0;
+}
+
 .task:hover {
     border-color: #393939;
     box-shadow: 0 0 4px #393939;
@@ -232,6 +254,7 @@ input.boardname {
 .memberimg {
     margin: 0px !important;
     padding: 0px !important;
+    display: inline;
 }
 
 .admin, .members {

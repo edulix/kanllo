@@ -278,8 +278,8 @@ Lists.allow({
             }
 
             // check all cards exist
-            for (var card_id in board.cards) {
-                if (Cards.find({_id: card_id}).count() != 1) {
+            for (var i in board.cards) {
+                if (Cards.find({_id: board.cards[i]}).count() != 1) {
                     return false;
                 }
             }
@@ -357,14 +357,14 @@ Cards.allow({
 
 
             // check all members exist and are valid
-            for (var member_id in card.members) {
-                if (board.members.indexOf(member_id) == -1) {
+            for (var i in card.members) {
+                if (board.members.indexOf(board.members[i]) == -1) {
                     return false;
                 }
             }
             // same for suscribed members
-            for (var member_id in card.members) {
-                if (board.members.indexOf(member_id) == -1) {
+            for (var i in card.members) {
+                if (board.members.indexOf(board.members[i]) == -1) {
                     return false;
                 }
             }
@@ -377,7 +377,7 @@ Cards.allow({
             // TODO: A good improvement would be to validate the type of the new
             // value of the field (and if a string, the length.) In the
             // future Meteor will have a schema system to makes that easier.
-                return true;
+            return true;
         });
     },
     remove: function (userId, cards) {
